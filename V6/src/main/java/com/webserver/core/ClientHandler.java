@@ -52,7 +52,7 @@ public class ClientHandler implements Runnable{
             //定位static目录下的HTML文件
             File file = new File(staticDir,path);//path为项目中的HTML文件
             System.out.println("文件是否存在："+file.exists());
-            if (file.exists()) {
+            if (file.exists()&&file.isFile()) {
             /*
                 测试:给浏览器发送一个响应，包含static目录下的index.html
                 HTTP/1.1 200 OK(CRLF)
