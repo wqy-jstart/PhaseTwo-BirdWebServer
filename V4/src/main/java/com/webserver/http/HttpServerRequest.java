@@ -15,14 +15,18 @@ import java.util.Map;
  */
 public class HttpServerRequest {
     private Socket socket;
+    //请求行的相关信息
+    private String method;//请求方式
+    private String uri;//抽象路径
+    private String protocol;//协议版本
+    //消息头的相关信息
+    private Map<String,String> headers = new HashMap<>();
+
     public HttpServerRequest(Socket socket) throws IOException {
         this.socket=socket;
+        //请求的相关信息
         String line = readline();//接收返回的请求行内容,若接收失败就不用解析并给浏览器发信号
         System.out.println("请求行内容："+line);
-        //请求的相关信息
-        String method;//请求方式
-        String uri;//抽象路径
-        String protocol;//协议版本
 
         String[] data = line.split("\\s");//按空格拆分
         System.out.println("拆分后为："+ Arrays.toString(data));//分了3个元素
@@ -35,7 +39,6 @@ public class HttpServerRequest {
         System.out.println("protocol:"+protocol);
 
         //读取消息头
-        Map<String,String> headers = new HashMap<>();
         while (true) {
             line = readline();
             if (line.isEmpty()){//如果读取到的是空字符串,说明单独读取到了CRLF
