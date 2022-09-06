@@ -25,7 +25,7 @@ public class ClientHandler implements Runnable{
             InputStream in = socket.getInputStream();//通过socket获取输入流
             StringBuilder builder = new StringBuilder();
             char pre='a',cur='a';//上一次和下一次默认为a(97)
-            int d;//接收read()方法返回读取第几个字节内容(一次读一个字符)
+            int d;//接收read()方法返回读取1个字节二进制低八位内容(一次读一个)
             while ((d = in.read()) != -1){//当为-1时说明字节读取到末尾
                 cur = (char)d;//本次读到的字符
                 if (pre==13&&cur==10){//若上一个读取的是回车符并且本次读取的是换行符

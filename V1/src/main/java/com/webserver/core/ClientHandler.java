@@ -25,7 +25,7 @@ public class ClientHandler implements Runnable{
     public void run() {
         try {
             InputStream in = socket.getInputStream();//通过socket获取输入流
-            int d;//接收read()方法返回读取的字节
+            int d;//接收read()方法返回读取1个字节二进制低八位内容(一次读一个)
             while ((d = in.read()) != -1){//当为-1时说明字节读取到末尾
                 System.out.print((char)d);//
             }
