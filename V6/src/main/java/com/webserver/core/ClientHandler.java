@@ -52,6 +52,7 @@ public class ClientHandler implements Runnable{
             //定位static目录下的HTML文件
             File file = new File(staticDir,path);//path为项目中的HTML文件
             System.out.println("文件是否存在："+file.exists());
+            if (file.exists()) {
             /*
                 测试:给浏览器发送一个响应，包含static目录下的index.html
                 HTTP/1.1 200 OK(CRLF)
@@ -59,30 +60,44 @@ public class ClientHandler implements Runnable{
                 Content-Length: 2546(CRLF)(CRLF)
                 1011101010101010101......
              */
-            OutputStream out = socket.getOutputStream();//通过socket获取文件输出流
-            //发送状态行
-            //HTTP/1.1 200 OK(CRLF)
-            println("HTTP/1.1 200 OK");
+                OutputStream out = socket.getOutputStream();//通过socket获取文件输出流
+                //发送状态行
+                //HTTP/1.1 200 OK(CRLF)
+                println("HTTP/1.1 200 OK");
 
-            //发送响应头
-            //Content-Type: text/html(CRLF)
-            println("Content-Type: text/html");
+                //发送响应头
+                //Content-Type: text/html(CRLF)
+                println("Content-Type: text/html");
 
-            //Content-Length: 2546(CRLF)
-            println("Content-Length: "+file.length());
+                //Content-Length: 2546(CRLF)
+                println("Content-Length: " + file.length());
 
-            //单独发送回车+换行表达响应头发送完毕
-            println("");//空字符串
+                //单独发送回车+换行表达响应头发送完毕
+                println("");//空字符串
 
-            //发送响应正文
-            //将index.html文件所有数据发送
-            FileInputStream fis = new FileInputStream(file);
-            byte[] data = new byte[1024*10];//块读
-            int len;//表示一次读取的量
-            while ((len = fis.read(data)) != -1){
-                out.write(data,0,len);//
+                //发送响应正文
+                //将index.html文件所有数据发送
+                FileInputStream fis = new FileInputStream(file);
+                byte[] data = new byte[1024 * 10];//块读
+                int len;//表示一次读取的量
+                while ((len = fis.read(data)) != -1) {
+                    out.write(data, 0, len);//
+                }
+            }else {
+                OutputStream out = socket.getOutputStream();//通过socket获取文件输出流
+                File file1 = new File(staticDir,"root");
+                File file2 = new File(file1,"404.html");
+                println("HTTP/1.1 404 NotFound");
+                println("Content-Type: text/html");
+                println("Content-Length: " + file2.length());
+                println("");
+                FileInputStream fis = new FileInputStream(file2);
+                byte[] data = new byte[1024 * 10];//块读
+                int len;//表示一次读取的量
+                while ((len = fis.read(data)) != -1) {
+                    out.write(data, 0, len);//
+                }
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }finally {

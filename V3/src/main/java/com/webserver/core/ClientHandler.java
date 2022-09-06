@@ -45,15 +45,15 @@ public class ClientHandler implements Runnable{
             //读取消息头
             Map<String,String> headers = new HashMap<>();
             while (true) {
-                line = readline();
+                line = readline();//循环调用readline()方法读一行
                 if (line.isEmpty()){//如果读取到的是空字符串,说明单独读取到了CRLF
-                    break;
+                    break;//读取到最后为空时结束
                 }
                 System.out.println("消息头："+line);
                 //将消息头按照":"拆分为名字和值并作为key,value存入到headers中
                 data = line.split(":\\s");
                 //System.out.println(Arrays.toString(data));//输出拆分后的消息头
-                headers.put(data[0],data[1]);
+                headers.put(data[0],data[1]);//将截取的两部分分为key和value
             }
             System.out.println("headers:"+headers);//Map输出的格式为(Key=Value)
 
@@ -68,7 +68,7 @@ public class ClientHandler implements Runnable{
             }
         }
     }
-
+    //该方法实现调用一次读一行读到CRLF(回车换行)时一行结束
     public String readline() throws IOException { //重用的代码要抛出去
         //调用同一个socket对象若干次getInputStream()方法返回的始终是同一条输入流
         InputStream in = socket.getInputStream();//通过socket获取输入流
@@ -78,7 +78,7 @@ public class ClientHandler implements Runnable{
         while ((d = in.read()) != -1){//当为-1时说明字节读取到末尾
             cur = (char)d;//本次读到的字符
             if (pre==13&&cur==10){//若上一个读取的是回车符并且本次读取的是换行符
-                break;//跳出循环
+                break;//跳出循环,相当于以行为单位读取
             }
             builder.append(cur);//拼接本次读取到的字符
             pre = cur;//进入下一次循环前将本次读取的字符记作上次读取的字符

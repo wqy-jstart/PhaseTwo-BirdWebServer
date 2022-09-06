@@ -25,11 +25,11 @@ public class BirdBootApplication {
     public void start(){
         try {
             System.out.println("等待客户端连接...");
-            Socket socket = serverSocket.accept();
+            Socket socket = serverSocket.accept();//等待客户端查到端口
             System.out.println("一个客户端连接了!");
             //启动一个线程处理该客户端交互
-            ClientHandler handler = new ClientHandler(socket);
-            Thread t = new Thread(handler);
+            ClientHandler handler = new ClientHandler(socket);//实例化ClientHandler
+            Thread t = new Thread(handler);//
             t.start();
 
         } catch (IOException e) {
@@ -38,7 +38,7 @@ public class BirdBootApplication {
     }
 
     public static void main(String[] args) {
-        BirdBootApplication application = new BirdBootApplication();
-        application.start();
+        BirdBootApplication application = new BirdBootApplication();//实例化对象
+        application.start();//启动线程
     }
 }

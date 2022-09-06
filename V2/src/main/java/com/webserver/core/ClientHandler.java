@@ -24,7 +24,7 @@ public class ClientHandler implements Runnable{
         try {
             InputStream in = socket.getInputStream();//通过socket获取输入流
             StringBuilder builder = new StringBuilder();
-            char pre='a',cur='a';//上一次和下一次默认为a(97)
+            char pre='a',cur='a';//pre表示上次读取的字符，cur表示本次读取的字符
             int d;//接收read()方法返回读取1个字节二进制低八位内容(一次读一个)
             while ((d = in.read()) != -1){//当为-1时说明字节读取到末尾
                 cur = (char)d;//本次读到的字符
@@ -32,7 +32,7 @@ public class ClientHandler implements Runnable{
                     break;//跳出循环
                 }
                 builder.append(cur);//拼接本次读取到的字符
-                pre = cur;//进入下一次循环前将本次读取的字符基座上次读取的字符
+                pre = cur;//进入下一次循环前将本次读取的字符记作上次读取的字符
             }
             String line = builder.toString().trim();//去除空格,转换为字符串输出
             System.out.println("请求行内容："+line);

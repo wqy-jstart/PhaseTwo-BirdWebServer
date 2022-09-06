@@ -23,6 +23,7 @@ public class ClientHandler implements Runnable{
     @Override
     public void run() {
         try {
+            //将socket传入实例化中
             HttpServerRequest request = new HttpServerRequest(socket);//实例化request
         } catch (IOException e) {
             e.printStackTrace();
