@@ -1,7 +1,6 @@
 package com.webserver.core;
 
 import com.webserver.http.HttpServerRequest;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -40,7 +39,7 @@ public class ClientHandler implements Runnable{
             //定位static目录(static目录下存放的是所有静态资源)
             File staticDir = new File(rootDir,"static");
             //定位static目录下的index.html
-            File file = new File(staticDir,"index.html");
+            File file = new File(staticDir,"classtable.html");
             System.out.println("文件是否存在："+file.exists());
             /*
                 测试:给浏览器发送一个响应，包含static目录下的index.html
@@ -52,27 +51,17 @@ public class ClientHandler implements Runnable{
             OutputStream out = socket.getOutputStream();//通过socket获取输出流
             //发送状态行
             //HTTP/1.1 200 OK(CRLF)
-            String line = "HTTP/1.1 200 OK";
-            out.write(line.getBytes(StandardCharsets.ISO_8859_1));
-            out.write(13);//回车符
-            out.write(10);//换行符
+            println("HTTP/1.1 200 OK");
 
             //发送响应头
             //Content-Type: text/html(CRLF)
-            line = "Content-Type: text/html";
-            out.write(line.getBytes(StandardCharsets.ISO_8859_1));
-            out.write(13);
-            out.write(10);
+            println("Content-Type: text/html");
 
             //Content-Length: 2546(CRLF)
-            line = "Content-Length: "+file.length();
-            out.write(line.getBytes(StandardCharsets.ISO_8859_1));
-            out.write(13);
-            out.write(10);
+            println("Content-Length: "+file.length());
 
             //单独发送回车+换行表达响应头发送完毕
-            out.write(13);
-            out.write(10);
+            println("");//空字符串
 
             //发送响应正文
             //将index.html文件所有数据发送
@@ -93,6 +82,13 @@ public class ClientHandler implements Runnable{
                 e.printStackTrace();
             }
         }
+    }
+
+    private void println(String line) throws IOException {//被重用的操作
+        OutputStream out = socket.getOutputStream();//通过socket获取输出流
+        out.write(line.getBytes(StandardCharsets.ISO_8859_1));
+        out.write(13);//回车符
+        out.write(10);//换行符
     }
 
     public static void main(String[] args) throws URISyntaxException {
