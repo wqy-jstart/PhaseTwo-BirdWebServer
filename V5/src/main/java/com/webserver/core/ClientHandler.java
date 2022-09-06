@@ -20,6 +20,21 @@ import java.nio.charset.StandardCharsets;
  */
 public class ClientHandler implements Runnable{
     private Socket socket;
+    private static File rootDir;
+    private static File staticDir;
+    static {
+        try {
+            //rootDir表示类加载路径:target/classes目录
+            rootDir = new File(
+                    ClientHandler.class.getClassLoader()
+                            .getResource(".").toURI()
+            );
+            //定位static目录(static目录下存放的是所有静态资源)
+            staticDir = new File(rootDir,"static");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
     public ClientHandler(Socket socket){
         this.socket=socket;
     }
@@ -29,17 +44,13 @@ public class ClientHandler implements Runnable{
         try {
 //            1:解析请求(将客户端发送过来的请求内容读取到)
             HttpServerRequest request = new HttpServerRequest(socket);//实例化request
+
 //            2:处理请求(根据请求内容进行对应的处理)
+            String path = request.getUri();//将获得的抽象路径赋给path
+
 //            3:发送响应(将处理结果回馈给浏览器)
-            //rootDir表示类加载路径:target/classes目录
-            File rootDir = new File(
-                    ClientHandler.class.getClassLoader()
-                            .getResource(".").toURI()
-            );
-            //定位static目录(static目录下存放的是所有静态资源)
-            File staticDir = new File(rootDir,"static");
-            //定位static目录下的index.html
-            File file = new File(staticDir,"classtable.html");
+            //定位static目录下的HTML文件
+            File file = new File(staticDir,path);//path为项目中的HTML文件
             System.out.println("文件是否存在："+file.exists());
             /*
                 测试:给浏览器发送一个响应，包含static目录下的index.html
@@ -48,7 +59,7 @@ public class ClientHandler implements Runnable{
                 Content-Length: 2546(CRLF)(CRLF)
                 1011101010101010101......
              */
-            OutputStream out = socket.getOutputStream();//通过socket获取输出流
+            OutputStream out = socket.getOutputStream();//通过socket获取文件输出流
             //发送状态行
             //HTTP/1.1 200 OK(CRLF)
             println("HTTP/1.1 200 OK");
@@ -72,7 +83,7 @@ public class ClientHandler implements Runnable{
                 out.write(data,0,len);//
             }
 
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }finally {
             //按照HTTP协议要求，处理最后要断开连接
