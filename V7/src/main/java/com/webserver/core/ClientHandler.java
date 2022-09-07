@@ -19,8 +19,8 @@ import java.net.URISyntaxException;
  */
 public class ClientHandler implements Runnable{
     private Socket socket;
-    private static File rootDir;
-    private static File staticDir;
+    private static File rootDir;//声明类加载路径
+    private static File staticDir;//声明类加载路径下的static静态资源目录
     static {
         try {
             //rootDir表示类加载路径:target/classes目录

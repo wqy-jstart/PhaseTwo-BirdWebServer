@@ -57,7 +57,7 @@ public class HttpServletResponse {
         println("Content-Length: " + contentFile.length());
 
         //单独发送回车+换行表达响应头发送完毕
-        println("");//空字符串
+        println("");//传入空字符串后不走getBytes直接输出CRLF
     }
 
     //发送响应正文

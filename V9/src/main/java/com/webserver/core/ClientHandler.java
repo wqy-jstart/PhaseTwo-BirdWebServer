@@ -17,6 +17,7 @@ import java.net.URISyntaxException;
  * 3:发送响应(将处理结果回馈给浏览器)
  * 断开连接
  */
+//将该类作为一个线程使用,将三大步骤放入该线程中
 public class ClientHandler implements Runnable{
     private Socket socket;
 
@@ -51,7 +52,7 @@ public class ClientHandler implements Runnable{
         }
     }
 
-
+//测试搜索加载路径
     public static void main(String[] args) throws URISyntaxException {
         File rootDir = new File( //寻找类加载路径
                 ClientHandler.class.getClassLoader()

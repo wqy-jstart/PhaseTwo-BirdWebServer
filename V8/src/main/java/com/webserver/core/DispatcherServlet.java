@@ -14,8 +14,8 @@ import java.net.URISyntaxException;
  */
 public class DispatcherServlet {
     private static DispatcherServlet instance = new DispatcherServlet();
-    private static File rootDir;
-    private static File staticDir;
+    private static File rootDir;//声明类加载路径
+    private static File staticDir;//声明类加载路径下的static静态资源目录
     static {
         try {
             //rootDir表示类加载路径:target/classes目录
@@ -36,6 +36,7 @@ public class DispatcherServlet {
         return instance;
     }
 
+    //★该方法用来请求抽象路径和判断文件是否属于该项目下,并作出不同的响应页面
     public void service(HttpServletRequest request, HttpServletResponse response){
         String path = request.getUri();//将获得的抽象路径赋给path
         //定位static目录下的HTML文件

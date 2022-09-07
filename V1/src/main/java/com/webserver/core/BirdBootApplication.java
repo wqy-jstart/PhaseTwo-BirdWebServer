@@ -10,12 +10,15 @@ import java.net.Socket;
  * 之间的处理细节。
  * 了解SpringMVC核心类的设计与实现
  */
+/**
+ * 服务端
+ */
 public class BirdBootApplication {
     private ServerSocket serverSocket;
     public BirdBootApplication(){
         try{
             System.out.println("正在启动服务器...");
-            serverSocket = new ServerSocket(8088);
+            serverSocket = new ServerSocket(8088);//服务端定义一个端口等待客户端连接
             System.out.println("服务端启动完毕！");
         }catch (IOException e){
             e.printStackTrace();
@@ -25,13 +28,13 @@ public class BirdBootApplication {
     public void start(){
         try {
             System.out.println("等待客户端连接...");
-            Socket socket = serverSocket.accept();//等待客户端查到端口
+            //服务端借助Socket引用类型调用accept()方法等待客户端连接
+            Socket socket = serverSocket.accept();
             System.out.println("一个客户端连接了!");
-            //启动一个线程处理该客户端交互
-            ClientHandler handler = new ClientHandler(socket);//实例化ClientHandler
-            Thread t = new Thread(handler);//
-            t.start();
-
+            //实例化ClientHandler处理该客户端交互
+            ClientHandler handler = new ClientHandler(socket);
+            Thread t = new Thread(handler);//创建线程传入handler
+            t.start();//★启动该线程,等待CPU分配时间片之后启动线程run()方法
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -39,6 +42,6 @@ public class BirdBootApplication {
 
     public static void main(String[] args) {
         BirdBootApplication application = new BirdBootApplication();//实例化对象
-        application.start();//启动线程
+        application.start();//利用该对象引用打点调用start()方法
     }
 }
