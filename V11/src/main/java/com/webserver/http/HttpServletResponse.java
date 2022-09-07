@@ -54,7 +54,14 @@ public class HttpServletResponse {
 
     //发送响应头
     private void sendHeaders() throws IOException {
-
+         /*
+            headers
+            key                 value
+            Content-Type        text/html
+            Content-Length      245
+            Server              BirdWebServer
+            ...                 ...
+         */
         //遍历headers散列表来发送每一个响应头
         Set<Map.Entry<String,String>> entrySet = headers.entrySet();
         for (Map.Entry<String,String> e : entrySet){

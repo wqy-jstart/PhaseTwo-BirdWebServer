@@ -100,7 +100,7 @@ public class HttpServletRequest {
     /**
      * 根据消息头名字获取对应的值
      * @param name
-     * @return
+     * @return value
      */
     public String getHeader(String name) {
         return headers.get(name);

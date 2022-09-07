@@ -2,18 +2,17 @@ package com.webserver.core;
 
 import com.webserver.http.HttpServletRequest;
 import com.webserver.http.HttpServletResponse;
-
 import java.io.File;
 import java.net.URISyntaxException;
 
 /**
- * 这个类时SpringMVC框架与tomcat容器整合的一个关键类,接管了处理请求的工作.
+ * 这个类是SpringMVC框架与tomcat容器整合的一个关键类,接管了处理请求的工作.
  * 这样当tomcat将请求对象和响应对象创建完毕后在处理请求的环节通过调用这个类来完成,从而
  * 将处理请求交给了SpringMVC框架
  * 并在处理后发送响应给浏览器
  */
 public class DispatcherServlet {
-    private static DispatcherServlet instance = new DispatcherServlet();
+    private static DispatcherServlet instance = new DispatcherServlet();//私有创建一个静态的对象
     private static File rootDir;//声明类加载路径
     private static File staticDir;//声明类加载路径下的static静态资源目录
     static {
@@ -31,7 +30,7 @@ public class DispatcherServlet {
     }
 
     private DispatcherServlet(){}
-
+    //getInstance()该方法正常用来返回一个对象名
     public static DispatcherServlet getInstance(){
         return instance;
     }
