@@ -45,12 +45,19 @@ public class DispatcherServlet {
         if(file.isFile()) {//file.isFile()表示存在并且是一个文件
             System.out.println("该文件存在！");
             response.setContentFile(file);//响应抽象路径下项目存在的HTML文件
+
+            response.addHeader("Content-Type","text/html");
+            response.addHeader("Content-Length",file.length()+"");
+            response.addHeader("Server","BirdWebServer");
+
         }else {
             System.out.println("文件不存在！");
             response.setStatusCode(404);
             response.setStatusReason("NotFound");
             file = new File(staticDir, "root/404.html");
             response.setContentFile(file);//响应项目中指定的404(HTML页面)
+            response.addHeader("Content-Type","text/html");
+            response.addHeader("Content-Length",file.length()+"");
         }
     }
 }

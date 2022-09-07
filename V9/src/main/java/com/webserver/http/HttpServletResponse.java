@@ -3,6 +3,9 @@ package com.webserver.http;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import static java.lang.System.out;
 
@@ -15,15 +18,16 @@ import static java.lang.System.out;
 public class HttpServletResponse {
     private Socket socket;
 
-    //状态行相关信息
+//  状态行相关信息：
     private int statusCode = 200;//状态代码
     private String statusReason = "OK";//状态描述
 
-    //响应头相关信息
+//  响应头相关信息：
+    //创建一个Map散列表，它存储的内容是键值对(key-value)映射。
+    private Map<String,String> headers = new HashMap<>();
 
-    //响应正文相关信息
+//  响应正文相关信息：
     private File contentFile;//响应正文对应的实体文件
-
 
 
     public HttpServletResponse(Socket socket){
@@ -50,12 +54,14 @@ public class HttpServletResponse {
 
     //发送响应头
     private void sendHeaders() throws IOException {
-        //Content-Type: text/html(CRLF)
-        println("Content-Type: text/html");
 
-        //Content-Length: 2546(CRLF)
-        println("Content-Length: " + contentFile.length());
-
+        //遍历headers散列表来发送每一个响应头
+        Set<Map.Entry<String,String>> entrySet = headers.entrySet();
+        for (Map.Entry<String,String> e : entrySet){
+            String key = e.getKey();
+            String value = e.getValue();
+            println(key+": "+value);
+        }
         //单独发送回车+换行表达响应头发送完毕
         println("");//传入空字符串后不走getBytes直接输出CRLF
     }
@@ -120,5 +126,14 @@ public class HttpServletResponse {
 
     public void setContentFile(File contentFile) {
         this.contentFile = contentFile;
+    }
+
+    /**
+     * 添加一个响应头
+     * @param name 响应头名字
+     * @param value 响应头的值
+     */
+    public void addHeader(String name,String value){
+        headers.put(name,value);
     }
 }
