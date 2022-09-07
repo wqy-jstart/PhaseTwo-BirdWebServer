@@ -40,7 +40,7 @@ public class ClientHandler implements Runnable{
             String method;//请求方式
             String uri;//抽象路径
             String protocol;//协议版本
-
+            //将
             String[] data = line.split("\\s");
             method = data[0];
             uri = data[1];
