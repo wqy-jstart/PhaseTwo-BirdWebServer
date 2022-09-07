@@ -47,12 +47,23 @@ public class ClientHandler implements Runnable{
 
 //            2:处理请求(根据请求内容进行对应的处理)
             String path = request.getUri();//将获得的抽象路径赋给path
-
-//            3:发送响应(将处理结果回馈给浏览器)
             //定位static目录下的HTML文件
             File file = new File(staticDir,path);//path为项目中的HTML文件
-            System.out.println("文件是否存在："+file.exists());
-            if (file.exists()&&file.isFile()) {
+            int statusCode;//状态代码
+            String statusReason;//状态描述
+            //根据用户提供的抽象路径去static目录下定位到一个文件
+            if(file.isFile()) {//file.isFile()表示存在并且是一个文件
+                System.out.println("该文件存在！");
+                statusCode = 200;
+                statusReason = "OK";
+            }else {
+                System.out.println("文件不存在！");
+                statusCode = 404;
+                statusReason = "NotFound";
+                file = new File(staticDir, "root/404.html");
+            }
+
+//            3:发送响应(将处理结果回馈给浏览器)
             /*
                 测试:给浏览器发送一个响应，包含static目录下的index.html
                 HTTP/1.1 200 OK(CRLF)
@@ -63,7 +74,7 @@ public class ClientHandler implements Runnable{
                 OutputStream out = socket.getOutputStream();//通过socket获取文件输出流
                 //发送状态行
                 //HTTP/1.1 200 OK(CRLF)
-                println("HTTP/1.1 200 OK");
+                println("HTTP/1.1"+" "+statusCode+" "+statusReason);
 
                 //发送响应头
                 //Content-Type: text/html(CRLF)
@@ -81,23 +92,23 @@ public class ClientHandler implements Runnable{
                 byte[] data = new byte[1024 * 10];//块读
                 int len;//表示一次读取的量
                 while ((len = fis.read(data)) != -1) {
-                    out.write(data, 0, len);//
+                    out.write(data, 0, len);
                 }
-            }else {
-                OutputStream out = socket.getOutputStream();//通过socket获取文件输出流
-                File file1 = new File(staticDir,"root");
-                File file2 = new File(file1,"404.html");
-                println("HTTP/1.1 404 NotFound");
-                println("Content-Type: text/html");
-                println("Content-Length: " + file2.length());
-                println("");
-                FileInputStream fis = new FileInputStream(file2);
-                byte[] data = new byte[1024 * 10];//块读
-                int len;//表示一次读取的量
-                while ((len = fis.read(data)) != -1) {
-                    out.write(data, 0, len);//
-                }
-            }
+//            else {
+//                OutputStream out = socket.getOutputStream();//通过socket获取文件输出流
+//                File file1 = new File(staticDir,"root");
+//                File file2 = new File(file1,"404.html");
+//                println("HTTP/1.1 404 NotFound");
+//                println("Content-Type: text/html");
+//                println("Content-Length: " + file2.length());
+//                println("");
+//                FileInputStream fis = new FileInputStream(file2);
+//                byte[] data = new byte[1024 * 10];//块读
+//                int len;//表示一次读取的量
+//                while ((len = fis.read(data)) != -1) {
+//                    out.write(data, 0, len);
+//                }
+//            }
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
