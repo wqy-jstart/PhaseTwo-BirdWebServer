@@ -1,6 +1,7 @@
 package com.webserver.core;
 
-import com.webserver.http.HttpServerRequest;
+import com.webserver.http.HttpServletRequest;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,6 +36,7 @@ public class ClientHandler implements Runnable{
             e.printStackTrace();
         }
     }
+
     public ClientHandler(Socket socket){
         this.socket=socket;
     }
@@ -43,7 +45,7 @@ public class ClientHandler implements Runnable{
     public void run() {
         try {
 //            1:解析请求(将客户端发送过来的请求内容读取到)
-            HttpServerRequest request = new HttpServerRequest(socket);//实例化request
+            HttpServletRequest request = new HttpServletRequest(socket);//实例化request
 
 //            2:处理请求(根据请求内容进行对应的处理)
             String path = request.getUri();//将获得的抽象路径赋给path
@@ -71,29 +73,29 @@ public class ClientHandler implements Runnable{
                 Content-Length: 2546(CRLF)(CRLF)
                 1011101010101010101......
              */
-                OutputStream out = socket.getOutputStream();//通过socket获取文件输出流
-                //发送状态行
-                //HTTP/1.1 200 OK(CRLF)
-                println("HTTP/1.1"+" "+statusCode+" "+statusReason);
+            OutputStream out = socket.getOutputStream();//通过socket获取文件输出流
+            //发送状态行
+            //HTTP/1.1 200 OK(CRLF)
+            println("HTTP/1.1"+" "+statusCode+" "+statusReason);
 
-                //发送响应头
-                //Content-Type: text/html(CRLF)
-                println("Content-Type: text/html");
+            //发送响应头
+            //Content-Type: text/html(CRLF)
+            println("Content-Type: text/html");
 
-                //Content-Length: 2546(CRLF)
-                println("Content-Length: " + file.length());
+            //Content-Length: 2546(CRLF)
+            println("Content-Length: " + file.length());
 
-                //单独发送回车+换行表达响应头发送完毕
-                println("");//空字符串
+            //单独发送回车+换行表达响应头发送完毕
+            println("");//空字符串
 
-                //发送响应正文
-                //将index.html文件所有数据发送
-                FileInputStream fis = new FileInputStream(file);
-                byte[] data = new byte[1024 * 10];//块读
-                int len;//表示一次读取的量
-                while ((len = fis.read(data)) != -1) {
-                    out.write(data, 0, len);
-                }
+            //发送响应正文
+            //将index.html文件所有数据发送
+            FileInputStream fis = new FileInputStream(file);
+            byte[] data = new byte[1024 * 10];//块读
+            int len;//表示一次读取的量
+            while ((len = fis.read(data)) != -1) {
+                out.write(data, 0, len);
+            }
 //            else {
 //                OutputStream out = socket.getOutputStream();//通过socket获取文件输出流
 //                File file1 = new File(staticDir,"root");
@@ -109,6 +111,7 @@ public class ClientHandler implements Runnable{
 //                    out.write(data, 0, len);
 //                }
 //            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }finally {

@@ -1,6 +1,6 @@
 package com.webserver.core;
 
-import com.webserver.http.HttpServerRequest;
+import com.webserver.http.HttpServletRequest;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -24,7 +24,7 @@ public class ClientHandler implements Runnable{
     public void run() {
         try {
             //将socket传入实例化中
-            HttpServerRequest request = new HttpServerRequest(socket);//实例化request
+            HttpServletRequest request = new HttpServletRequest(socket);//实例化request
         } catch (IOException e) {
             e.printStackTrace();
         }finally {

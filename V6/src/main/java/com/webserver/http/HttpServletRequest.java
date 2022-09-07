@@ -14,7 +14,7 @@ import java.util.Map;
  * 2:消息头
  * 3:消息正文
  */
-public class HttpServerRequest {
+public class HttpServletRequest {
     private Socket socket;
     //请求行的相关信息
     private String method;//请求方式
@@ -23,7 +23,7 @@ public class HttpServerRequest {
     //消息头的相关信息
     private Map<String,String> headers = new HashMap<>();//创建一个Map散列表
 
-    public HttpServerRequest(Socket socket) throws IOException {
+    public HttpServletRequest(Socket socket) throws IOException {
         this.socket = socket;
         //1:解析请求行
         parseRequestLine();
@@ -33,19 +33,19 @@ public class HttpServerRequest {
         parseContent();
     }
     //1：解析请求行
-     private void parseRequestLine () throws IOException {
+    private void parseRequestLine () throws IOException {
         String line = readline();//接收返回的请求行内容,若接收失败就不用解析并给浏览器发信号
-         System.out.println("请求行内容：" + line);
+        System.out.println("请求行内容：" + line);
 
-         String[] data = line.split("\\s");//按空格拆分
-         System.out.println("拆分后为：" + Arrays.toString(data));//分了3个元素
-         method = data[0];//获取元素1,赋值给请求方式
-         uri = data[1];//获取元素2,赋值给抽象路径
-         protocol = data[2];//获取元素3,赋值给协议版本
-         //打桩输出
-         System.out.println("method:" + method);
-         System.out.println("uri:" + uri);
-         System.out.println("protocol:" + protocol);
+        String[] data = line.split("\\s");//按空格拆分
+        System.out.println("拆分后为：" + Arrays.toString(data));//分了3个元素
+        method = data[0];//获取元素1,赋值给请求方式
+        uri = data[1];//获取元素2,赋值给抽象路径
+        protocol = data[2];//获取元素3,赋值给协议版本
+        //打桩输出
+        System.out.println("method:" + method);
+        System.out.println("uri:" + uri);
+        System.out.println("protocol:" + protocol);
     }
     //2：解析消息头
     private void parseHeaders () throws IOException {
@@ -74,7 +74,7 @@ public class HttpServerRequest {
         InputStream in = socket.getInputStream();//通过socket获取输入流
         StringBuilder builder = new StringBuilder();
         char pre='a',cur='a';//pre表示上次读取的字符，cur表示本次读取的字符
-        int d;//接收read()方法返回读取1个字节二进制低八位内容(一次读一个)
+        int d;//接收read()方法返回读取第几个字节内容(一次读一个字符)
         while ((d = in.read()) != -1){//当为-1时说明字节读取到末尾
             cur = (char)d;//本次读到的字符
             if (pre==13&&cur==10){//若上一个读取的是回车符并且本次读取的是换行符

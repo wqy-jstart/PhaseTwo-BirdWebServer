@@ -1,14 +1,12 @@
 package com.webserver.core;
 
 import com.webserver.http.HttpServletRequest;
+import com.webserver.http.HttpServletResponse;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.Socket;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 
 /**
  * 该线程任务负责处理与某个客户端的一次HTTP交互
@@ -45,44 +43,25 @@ public class ClientHandler implements Runnable{
         try {
 //            1:解析请求(将客户端发送过来的请求内容读取到)
             HttpServletRequest request = new HttpServletRequest(socket);//实例化request
-
+            HttpServletResponse response = new HttpServletResponse(socket);
 //            2:处理请求(根据请求内容进行对应的处理)
             String path = request.getUri();//将获得的抽象路径赋给path
-
-//            3:发送响应(将处理结果回馈给浏览器)
             //定位static目录下的HTML文件
             File file = new File(staticDir,path);//path为项目中的HTML文件
-            System.out.println("文件是否存在："+file.exists());
-            /*
-                测试:给浏览器发送一个响应，包含static目录下的index.html
-                HTTP/1.1 200 OK(CRLF)
-                Content-Type: text/html(CRLF)
-                Content-Length: 2546(CRLF)(CRLF)
-                1011101010101010101......
-             */
-            OutputStream out = socket.getOutputStream();//通过socket获取文件输出流
-            //发送状态行
-            //HTTP/1.1 200 OK(CRLF)
-            println("HTTP/1.1 200 OK");
-
-            //发送响应头
-            //Content-Type: text/html(CRLF)
-            println("Content-Type: text/html");
-
-            //Content-Length: 2546(CRLF)
-            println("Content-Length: "+file.length());
-
-            //单独发送回车+换行表达响应头发送完毕
-            println("");//空字符串
-
-            //发送响应正文
-            //将index.html文件所有数据发送
-            FileInputStream fis = new FileInputStream(file);
-            byte[] data = new byte[1024*10];//块读
-            int len;//表示一次读取的量
-            while ((len = fis.read(data)) != -1){
-                out.write(data,0,len);//
+            //根据用户提供的抽象路径去static目录下定位到一个文件
+            if(file.isFile()) {//file.isFile()表示存在并且是一个文件
+                System.out.println("该文件存在！");
+               response.setContentFile(file);
+            }else {
+                System.out.println("文件不存在！");
+                response.setStatusCode(404);
+                response.setStatusReason("NotFound");
+                file = new File(staticDir, "root/404.html");
+                response.setContentFile(file);
             }
+
+//           3:发送响应(将处理结果回馈给浏览器)
+            response.response();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -96,12 +75,6 @@ public class ClientHandler implements Runnable{
         }
     }
 
-    private void println(String line) throws IOException {//被重用的操作
-        OutputStream out = socket.getOutputStream();//通过socket获取输出流
-        out.write(line.getBytes(StandardCharsets.ISO_8859_1));
-        out.write(13);//回车符
-        out.write(10);//换行符
-    }
 
     public static void main(String[] args) throws URISyntaxException {
         File rootDir = new File( //寻找类加载路径
