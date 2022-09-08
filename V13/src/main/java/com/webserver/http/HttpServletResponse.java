@@ -80,13 +80,15 @@ public class HttpServletResponse {
     private void sendContent() throws IOException {
         //将index.html文件所有数据发送
         OutputStream out = socket.getOutputStream();//通过socket获取输出流
-        try(
-            FileInputStream fis = new FileInputStream(contentFile)//获取文件输入流
+        if (contentFile!=null){
+            try(
+                    FileInputStream fis = new FileInputStream(contentFile)//获取文件输入流
            ) {
-            byte[] data = new byte[1024 * 10];//块读
-            int len;//表示一次读取的量
-            while ((len = fis.read(data)) != -1) {
-                out.write(data, 0, len);
+                byte[] data = new byte[1024 * 10];//块读
+                int len;//表示一次读取的量
+                while ((len = fis.read(data)) != -1) {
+                    out.write(data, 0, len);
+                }
             }
         }
 //            else {
