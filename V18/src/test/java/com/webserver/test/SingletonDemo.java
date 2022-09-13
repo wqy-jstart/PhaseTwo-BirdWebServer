@@ -8,6 +8,7 @@ package com.webserver.test;
  */
 public class SingletonDemo {
     public static void main(String[] args) {
+        //未重写toString()方法,输出对象
         Singleton s1 = Singleton.getInstance();
         System.out.println(s1);//com.webserver.test.Singleton@232204a1
         Singleton s2 = Singleton.getInstance();
