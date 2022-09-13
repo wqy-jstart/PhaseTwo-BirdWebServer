@@ -1,6 +1,6 @@
 package com.webserver.core;
 
-import com.webserver.Controller.UserController;
+import com.webserver.controller.UserController;
 import com.webserver.http.HttpServletRequest;
 import com.webserver.http.HttpServletResponse;
 
