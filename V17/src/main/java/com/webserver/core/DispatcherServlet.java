@@ -102,11 +102,11 @@ public class DispatcherServlet {
         File file = new File(staticDir, path);//path为项目中的HTML文件
         //根据用户提供的抽象路径去static目录下定位到一个文件
         if (file.isFile()) {//file.isFile()表示存在并且是一个文件
-            System.out.println("该文件存在！");
+            System.out.println("是一个普通文件！");
             response.setContentFile(file);//响应抽象路径下项目存在的HTML文件
             response.addHeader("Server", "BirdWebServer");
         } else {
-            System.out.println("文件不存在！");
+            System.out.println("该文件不存在！");
             response.setStatusCode(404);
             response.setStatusReason("NotFound");
             file = new File(staticDir, "root/404.html");
