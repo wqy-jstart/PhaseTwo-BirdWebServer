@@ -62,7 +62,7 @@ public class HandlerMapping {
      * @return
      */
     public static Method getMethod(String uri){
-        return mapping.get(uri);
+        return mapping.get(uri);//传key返回value并用Method接收
     }
 
     public static void main(String[] args) {

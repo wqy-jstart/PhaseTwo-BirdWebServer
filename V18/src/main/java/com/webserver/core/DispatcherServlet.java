@@ -45,13 +45,14 @@ public class DispatcherServlet {
     //★该方法用来请求抽象路径和判断文件是否属于该项目下,并作出不同的响应页面
     public void service(HttpServletRequest request, HttpServletResponse response) {
         String path = request.getRequestURI();//将获得的抽象路径赋给path
-
+        //是否为处理业务
         try {
-            Method method = HandlerMapping.getMethod(path);
-            if (method!=null){
+            Method method = HandlerMapping.getMethod(path);//传入抽象路径获取方法
+            if (method!=null){ //如果方法不为null,调用方法
+                //★通过方法对象获取其所属的类的类对象
                 Class cls = method.getDeclaringClass();
                 Object controller = cls.newInstance();
-                method.invoke(controller,request,response);
+                method.invoke(controller,request,response);//调用有参方法并传递类对象和两个参数
                 return;
             }
         } catch (Exception e) {
@@ -67,6 +68,7 @@ public class DispatcherServlet {
             response.addHeader("Server", "BirdWebServer");
         } else {
             System.out.println("该文件不存在！");
+            //修改状态
             response.setStatusCode(404);
             response.setStatusReason("NotFound");
             file = new File(staticDir, "root/404.html");
