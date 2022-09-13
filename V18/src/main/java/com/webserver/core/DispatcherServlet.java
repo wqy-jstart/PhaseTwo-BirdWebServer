@@ -71,7 +71,7 @@ public class DispatcherServlet {
             //修改状态
             response.setStatusCode(404);
             response.setStatusReason("NotFound");
-            file = new File(staticDir, "root/404.html");
+            file = new File(staticDir, "/root/404.html");
             response.setContentFile(file);//响应项目中指定的404(HTML页面)
         }
     }
