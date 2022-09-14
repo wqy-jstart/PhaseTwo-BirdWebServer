@@ -78,8 +78,8 @@ public class DispatcherServlet {
                             String value = rm.value();
                             //若本次请求路径和@RequestMapping注解参数值一样这说明
                             if (path.equals(value)) {
-                                Object controller = cls.newInstance();
-                                method.invoke(controller, request, response);
+                                Object controller = cls.newInstance();//实例化对象
+                                method.invoke(controller, request, response);//调用方法,先传入对象的引用,之后传递方法参数
                                 return;
                             }
                         }

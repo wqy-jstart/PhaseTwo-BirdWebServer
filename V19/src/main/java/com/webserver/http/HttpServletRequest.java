@@ -79,7 +79,7 @@ public class HttpServletRequest {
         requestURI = data[0];
         if (data.length>1){ //数组长度>1说明"?"后面有参数
             queryString = data[1];
-            //调用下面parseParameters()方法传入queryString？右边参数部分
+            //调用下面parseParameters()方法传入queryString(？右边参数部分)进行转码拆分
             parseParameters(queryString);
         }
         System.out.println("requestURI:"+requestURI);
@@ -91,7 +91,7 @@ public class HttpServletRequest {
      * 解析参数。参数可能来自于抽象路径uri中或正文中
      * @param line 字符串格式应当是name=value&name=value&...
      */
-    private void parseParameters(String line){
+    private void parseParameters(String line){//返回值为void,将内容转码后拆分放入parameters里
         //对参数部分进行转码
         try {
             line = URLDecoder.decode(line,"UTF-8");//URLDecoder解码器
@@ -145,7 +145,7 @@ public class HttpServletRequest {
                     //表单数据,不含附件的。格式是一个字符串,就是原GET请求中在抽象路径"?"右侧内容
                     String line = new String(data,StandardCharsets.ISO_8859_1);
                     System.out.println("正文内容："+line);
-                    parseParameters(line);
+                    parseParameters(line);//将正文内容进行转码拆分
                 }
 //                else if(){}//后期可以再自行扩展判断其他类型并解析正文
             }
