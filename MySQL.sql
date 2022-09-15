@@ -332,7 +332,6 @@ DELETE FROM hero;
 DROP DATABASE day1db;
 #查看有多少的数据库
 SHOW DATABASES;
-# 数据类型
 
 #   ★数据类型
 #整数:INT(m)和BIGINT(m).m表示的是长度 例如:m=5 存数字18 实际存储:00018
@@ -399,7 +398,7 @@ CREATE TABLE student(
 DESC student;
 
 #由于name为NOT NULL，因此名字必须指定值，不指定会报错
-INSERT INTO student VALUES (NULL,NULL,55,'m');#名字不能为空
+# INSERT INTO student VALUES (NULL,NULL,55,'m');#名字不能为空
 
 #★id本身的主键约束要求非空且唯一，但是由于有自增，所以当不指定时使用系统生成的自增值(有自增时就不要主动赋值)
 INSERT INTO student VALUES (NULL,'刘桑',55,'m');
@@ -574,7 +573,7 @@ WHERE dept_id=1;
 # %:表示任意个字符(0-多个)
 
 #查看姓孙的员工信息？(名字第一个字符是孙的员工)
-SELECT name,sal,job
+SELECT *
 FROM emp
 WHERE name LIKE '孙%';
 
@@ -695,7 +694,7 @@ FROM emp
 WHERE job<>'CEO' AND sal>2000
 ORDER BY sal DESC;
 
-# (31).分页查询
+# (31).分页查询----LIMIT(limit 限制)
 # 将满足查询条件的数据分段分批的查询出来。这可以减少不必要的系统开销。
 # 分页查询在SQL92标准没有定义，这意味着不同的数据库，分页查询方式完全不一样。
 # 在ORDER BY中使用LIMIT来完成的
