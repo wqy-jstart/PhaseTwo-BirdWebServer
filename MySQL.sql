@@ -80,7 +80,7 @@ DROP DATABASE mydb2;
 # 数据库对象:表,视图,索引都属于数据库对象.
 
 #(7).创建表(表中所有字段的默认值为null)
-# CREATE TABLE 表名(
+# CREATE TABLE 表名(-------★不给长度默认11位
 #     列名1 类型[(长度)] [DEFAULT 默认值] [约束条件],
 #     列名2 类型...
 # )[CHARSET=utf8/gbk]
@@ -242,6 +242,9 @@ INSERT INTO person(age,name) VALUES (22,'王五');
 #未指定的列插入的都是列的默认值,当创建表时没有为列声明特定的默认值时,列默认值都为null.
 INSERT INTO person(name) VALUES ('李四');
 
+#字段名可以忽略不写，此时为全列插入，即:VALUES需要指定每一列的值，且顺序，个数，类型必须与表中的字段一致
+INSERT INTO person VALUES('传奇',22);
+
 #(18).查看person表中的所有数据
 #SELECT * FROM 表名
 SELECT * FROM person;
@@ -274,7 +277,7 @@ WHERE age=24;
 
 SELECT *FROM person;
 
-#删除数据:DELETE语句
+#(20).删除数据:DELETE语句
 # DELETE FROM 表明 [WHERE 过滤条件]
 # 注意！！！ 不添加WHERE条件则是全表删除！！！---系统会提示
 
@@ -307,6 +310,9 @@ ALTER TABLE hero ADD id INT(3) FIRST;
 #在name后面添加age字段
 ALTER TABLE hero ADD age INT(3) AFTER name;
 #表中添加以下数据: 1,李白,50,6888 2.赵云,30,13888 3.刘备,25,6888
+#合并写(建议)
+INSERT INTO hero(id,name,age,money) VALUES (1,'李白',50,6888),(2,'赵云',30,13888),(3,'刘备',25,6888);
+#分开写(不建议)
 INSERT INTO hero(id,name,age,money) VALUES (1,'李白',50,6888);
 INSERT INTO hero(id,name,age,money) VALUES (2,'赵云',30,13888);
 INSERT INTO hero(id,name,age,money) VALUES (3,'刘备',25,6888);
@@ -328,19 +334,19 @@ DROP DATABASE day1db;
 SHOW DATABASES;
 # 数据类型
 
-#数字类型
+#   ★数据类型
 #整数:INT(m)和BIGINT(m).m表示的是长度 例如:m=5 存数字18 实际存储:00018
 #浮点数:DOUBLE(m,n)。m表示数字长度(整体数字的长度，包含小数)，n表示小数位 DOUBLE(5,3) 99.999
 # INSERT INTO XXX VALUES(12.9984) 实际插入数据时当精度超过可保存范围时，会进行四舍五入
 
-#字符类型
+#   ★字符类型
 #CHAR(n):定长字符串。每条记录实际占用的字节空间是定长的，不足的部分补充空字符来满足长度要求
 #        优点:查询速度快  缺点:浪费磁盘空间
 # VARCHAR(n):(变长字符串)。最多存n指定的字节数对应的字符，实际保存是用多少占多少。(推荐)
 #         优点:节省磁盘空间 缺点:查询速度慢
 # TEXT(n):可变长字符串，最大65535
 #
-# 日期时间类型
+#   ★日期时间类型
 # DATE:保存年月日
 # TIME:保存时分秒
 # DATETIME:保存年月日十分秒
@@ -348,6 +354,7 @@ SHOW DATABASES;
 USE empdb;
 SELECT * FROM emp;
 
+#(21).引入数据类型
 CREATE TABLE userinfo(
                          id INT,#整型
                          name VARCHAR(30),#变长字符
@@ -375,7 +382,7 @@ INSERT INTO userinfo VALUES (5,'钱七','1860-01-22',40000);
 #查询表中的所有数据
 SELECT * FROM userinfo;
 
-# 约束
+#(22).约束
 # 约束是为表中某个字段添加特定的限制条件，只有符合条件的记录才可以保存
 #
 # 主键约束:该字段非空且唯一，用该字段的值唯一表示一条记录
@@ -383,11 +390,12 @@ SELECT * FROM userinfo;
 # 外键约束:实际开发中几乎不使用外键约束
 
 CREATE TABLE student(
-                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        id INT AUTO_INCREMENT PRIMARY KEY,#primary(主要的) key主键
                         name VARCHAR(30) NOT NULL,#NOT NULL非空约束
                         age INT(3),
                         gender CHAR(1) #长度为1,超出按第一个
 );
+# 查看student表结构
 DESC student;
 
 #由于name为NOT NULL，因此名字必须指定值，不指定会报错
@@ -409,6 +417,88 @@ INSERT INTO student(name,age) VALUES ('国斌',22);
 
 #查询student表中所有的数据
 SELECT * FROM student;
+
+CREATE TABLE teacher(
+                        id INT PRIMARY KEY,
+                        name VARCHAR(30) NOT NULL,
+                        age INT(3),
+                        gender CHAR(1)
+);
+# 插入一行数据
+INSERT INTO teacher VALUES (1,'张三',22,'F');
+
+# 报错，主键字段不允许插入重复的值Duplicate entry '1' for key 'PRIMARY'
+INSERT INTO teacher VALUES (1,'李四',23,'M');
+
+# 报错,主键字段不能为NULL值Column 'id' cannot be null
+INSERT INTO teacher VALUES (NULL,'李四',23,'M');
+
+# (23).NULL作为条件是,要使用IS NULL 或 IS NOT NULL
+#查询不到任何数据-----在SQL中值不能与NULL(空)画等号,不支持
+SELECT * FROM student WHERE gender=NULL;
+
+# 查看性别为null的学生信息
+SELECT * FROM student WHERE gender IS NULL;
+
+# 查看性别不为null的学生信息
+SELECT * FROM student WHERE gender IS NOT NULL;
+
+#查询表中所有的数据
+SELECT * FROM teacher;
+SELECT * FROM student;
+
+
+# (24).DQL语句 数据查询语句
+# 基本语法：
+# SELECT 字段名1[,字段名2...或 * ] FROM 表名;
+
+USE empdb;
+# 查看emp表中每条记录的所有字段值
+SELECT * FROM emp;
+# 查看每个员工的名字,职位,入职时间
+SELECT name,job,hiredate FROM emp;
+
+# WHERE子句,用来添加过滤条件,此时可以仅将满足条件的记录查询出来
+# 比较运算符：=,>,>=,<,<=,<>(不等于)----!=操作不是所有的数据库都支持
+# 查看工资大于1000的员工名字,职位,工资
+#  SELECT(选择)
+#  FROM(来自于)
+#  WHERE(哪里)
+SELECT name,job,sal
+FROM emp
+WHERE sal>1000;
+
+#查看职位除'人事'之外的所有员工的名字,工资和职位
+SELECT name,sal,job
+FROM emp
+WHERE job <>'人事';
+
+#查看部门编号为2的员工名字,工资,职位,部门编号(dept_id)
+SELECT name,job,sal,dept_id
+FROM emp
+WHERE dept_id=2;
+
+# AND,OR来连接多个条件
+# AND:都为真时才为真  &&
+# OR:都为假时才为假  ||
+#查看2号部门工资高于1000的员工的名字,工资,职位,部门编号？---两个条件AND
+SELECT name,sal,job,dept_id
+FROM emp
+WHERE dept_id=2 AND sal>1000;
+
+#查看职位是人事或销售的所有员工的名字,工资,职位,部门编号?---两个条件OR
+SELECT name,sal,job,dept_id
+FROM emp
+WHERE job='人事' OR job='销售';
+
+
+
+
+
+
+
+
+
 
 
 
