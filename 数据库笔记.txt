@@ -426,3 +426,208 @@ SELECT name,sal,job,dept_id FROM emp WHERE dept_id=2
 # SELECT name,sal,job,dept_id
 # FROM emp
 # WHERE job='人事' OR job='销售'
+
+# 查看人事部的所有员工和工资高于1000的销售部员工的名字，工资，职位?
+SELECT name,sal,job
+FROM emp
+WHERE job='人事' OR sal>1000  AND job='销售';
+
+# 查看人事部和销售部工资高于1000的员工的名字，工资，职位?
+SELECT name,sal,job
+FROM emp
+WHERE (job='人事' OR job='销售') AND sal>1000;
+# AND优先级高于OR，因此可以通过()来提高OR的优先级
+
+# IN(列表) 值在列表中(等于列表中的其中之一)
+# 查看职位是人事和销售的所有员工的名字，工资，职位，部门编号?
+SELECT name,sal,job,dept_id
+FROM emp
+WHERE job IN ('人事','销售');
+
+# 查看职位是人事和销售以外的所有员工的名字，工资，职位，部门编号?
+SELECT name,sal,job,dept_id
+FROM emp
+WHERE job<>'人事' AND job<>'销售';
+#不在列表中
+SELECT name,sal,job,dept_id
+FROM emp
+WHERE job NOT IN ('人事','销售');
+
+
+# 查看工资在2000到3000之间的员工的名字，工资，职位?
+SELECT name,sal,job
+FROM emp
+WHERE sal>=2000 AND sal<=3000;
+# BETWEEN min AND max  在两者之间，即:>=min AND <=max
+SELECT name,sal,job
+FROM emp
+WHERE sal BETWEEN 2000 AND 3000;
+
+# DISTINCT用于去除指定列重复值的行   并且DISTINCT关键字必须紧跟SELECT
+# 查看公司有多少种职位?
+SELECT DISTINCT job FROM emp;
+#多列去重时，就是去除指定这些列的值的组合有重复的行
+#去除职位与部门编号重复的行
+SELECT DISTINCT job,dept_id FROM emp
+
+# 练习:
+# 1. 查询2号部门工资高于1000的员工信息
+SELECT *
+FROM emp
+WHERE dept_id=2 AND sal>=1000;
+# 2. 查询3号部门或工资等于5000的员工信息
+SELECT *
+FROM emp
+WHERE dept_id=3 OR sal=5000;
+# 3. 查询工资在1000到2000之间的员工姓名和工资
+SELECT name,sal
+FROM emp
+WHERE sal BETWEEN 1000 AND 2000;
+# 4. 查询工资不等于3000和5000的员工信息
+SELECT *
+FROM emp
+WHERE sal NOT IN(3000,5000);
+# 5. 查询1号部门有哪几种不同的工作
+SELECT DISTINCT job
+FROM emp
+WHERE dept_id=1
+
+# 模糊查询:LIKE
+# LIKE中两个通配符:_和%
+# _(下划线):表示任意的一个字符
+# %:表示任意个字符(0-多个)
+
+# 查看姓孙的员工信息?(名字第一个字符是孙的员工)
+SELECT name,sal,job
+FROM emp
+WHERE name LIKE '孙%';
+
+# 查看名字里含"悟"的员工?
+SELECT name,sal,job
+FROM emp
+WHERE name LIKE '%悟%';
+
+# 查看名字第三个字是'精';
+SELECT name,sal,job
+FROM emp
+WHERE name LIKE '__精';
+
+# 查看第二个字是'骨'的员工?
+SELECT name,sal,job
+FROM emp
+WHERE name LIKE '_骨%';
+
+总结
+%X%:字符串中包含X
+%X:字符串以X结尾
+X%:字符串以X开头
+_X%:字符串第二个字符是X
+%X_:倒数第二个字符是X
+X%Y:字符串以X开头Y结尾
+X_Y:字符串只有三个字，第一个是X，第三个是Y
+
+练习:
+# 1. 查询名字姓猪的员工姓名
+SELECT name
+FROM emp
+WHERE name LIKE '猪%';
+# 2. 查询名字中包含僧的员工信息
+SELECT *
+FROM emp
+WHERE name LIKE '%僧%'
+# 3. 查询名字以精结尾的员工姓名
+SELECT name
+FROM emp
+WHERE name LIKE '%精';
+# 4. 查询工作中包含销售并且工资大于1500的员工信息
+SELECT *
+FROM emp
+WHERE job LIKE '%销售%'
+AND sal>1500;
+# 5. 查询工作中第二个字是售的员工姓名和工作
+SELECT name,job
+FROM emp
+WHERE job LIKE '_售%';
+# 6. 查询1号和2号部门中工作以市开头的员工信息
+SELECT *
+FROM emp
+WHERE dept_id IN (1,2)
+AND job LIKE '市%'
+
+# ORDER BY子句，根据指定的字段排序查询结果集。该子句只能放在查询语句的最后一个子句上
+# 查看公司所有员工的工资，且工资从低到高排序
+SELECT name,sal
+FROM emp
+ORDER BY sal;
+
+#按照时间排序时，越早的时间越小，越晚的时间越大
+SELECT name,sal,hiredate
+FROM emp
+ORDER BY hiredate;
+
+#按照升序排序时，可以使用关键字ASC，但是通常不需要写，因为默认就是升序(从小到大)
+SELECT name,sal,hiredate
+FROM emp
+ORDER BY hiredate ASC;
+
+#按照工资从大到小排序(降序)，降序使用关键字DESC
+SELECT name,sal
+FROM emp
+ORDER BY sal DESC;
+
+# 查看每个部门的工资排名
+# ORDER BY可以按照多字段排序，排序优先级时先将结果集按照第一个字段的值排序，保证第一个字段排序顺序的前提下
+# 将该字段值相同的记录中再按照第二个字段排序，依此类推。
+SELECT name,dept_id,sal
+FROM emp
+ORDER BY dept_id,sal DESC
+
+# 练习:
+# 1. 查询有领导的员工信息,按照入职日期(hiredate) 升序排序
+SELECT *
+FROM emp
+WHERE manager IS NOT NULL
+ORDER BY hiredate;
+2. 查询1号部门中名字中包含八的员工信息
+SELECT *
+FROM emp
+WHERE dept_id=1 AND name LIKE '%八%';
+# 3. 查询2号和3号部门中工资低于1500的员工信息
+SELECT *
+FROM emp
+WHERE dept_id IN(2,3) AND sal<1500;
+
+SELECT *
+FROM emp
+WHERE (dept_id=2 OR dept_id=3) AND sal<1500;
+# 4. 查询人事和程序员中工资高于2500的员工姓名,工资和工作
+SELECT name,sal,job
+FROM emp
+WHERE job IN('人事','程序员') AND sal>2500;
+# 5. 查询不是CEO的员工中工资高于2000的员工姓名,工资和工作,并且按照工资降序排序
+SELECT name,sal,job
+FROM emp
+WHERE job<>'CEO' AND sal>2000
+ORDER BY sal DESC
+
+# 分页查询
+# 将满足查询条件的数据分段分批的查询出来。这可以减少不必要的系统开销。
+# 分页查询在SQL92标准没有定义，这意味着不同的数据库，分页查询方式完全不一样。
+# 在ORDER BY中使用LIMIT来完成的
+# LIMIT 跳过的记录数,请求的记录数(每页显示的记录数)
+# LIMIT (页数-1)*每页显示的记录数,每页显示的记录数
+
+#按照工资降序后，每页显示3条，查看第二页
+SELECT name,sal
+FROM emp
+ORDER BY sal LIMIT 3,3;
+
+#按照工资降序后，每页显示3条，查看第三页
+SELECT name,sal
+FROM emp
+ORDER BY sal LIMIT 6,3;
+
+#按照工资降序后，每页显示4条，查看第3页
+SELECT name,sal
+FROM emp
+ORDER BY sal LIMIT 8,4;
