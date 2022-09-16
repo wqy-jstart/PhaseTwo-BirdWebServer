@@ -4,7 +4,8 @@ package com.webserver.test;
  * ★单例模式
  * java23种设计模式之一
  *
- * 使用该模式定义的类全局仅可创建一个实例
+ * 因Singleton类采用了单例模式
+ * 故使用该模式定义的类全局仅可创建一个实例(对象引用相同)
  */
 public class SingletonDemo {
     public static void main(String[] args) {
