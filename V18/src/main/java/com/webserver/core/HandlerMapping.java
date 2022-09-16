@@ -38,14 +38,14 @@ public class HandlerMapping {
                 for (File sub : subs){
                     //将.class替换为空串留下类名
                     String className = sub.getName().replace(".class","");
-                    Class cls = Class.forName("com.webserver.controller."+className);
+                    Class cls = Class.forName("com.webserver.controller."+className);//加载类,并传入完全限定名
                     if (cls.isAnnotationPresent(Controller.class)){//判断该类是否被注解@Controller标注
                         Method[] methods = cls.getDeclaredMethods();//利用类加载后的引用来获取这些类的所有方法(包含私有)
                         for (Method method : methods){//遍历方法数组
                             if (method.isAnnotationPresent(RequestMapping.class)){//判断方法是否被注解@RequestMapping标注
                                 RequestMapping rm = method.getAnnotation(RequestMapping.class);
                                 String value = rm.value();//获取@RequestMapping上的参数,该参数记录着该方法处理的请求路径
-                                mapping.put(value,method);//将参数作为key,获取的方法作为value放入Map键值对中
+                                mapping.put(value,method);//将表单action参数作为key,获取的方法作为value放入Map键值对中
                             }
                         }
                     }
