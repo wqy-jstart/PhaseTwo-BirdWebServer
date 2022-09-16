@@ -721,6 +721,204 @@ SELECT name,sal
 FROM emp
 ORDER BY sal DESC #按照降序排列
 LIMIT 8,4; #每页显示4条但末尾只有3条,查看第三页,跳过8条
+#=====================================================================
+# (32).查询的字段可以使用表达式
+# 查看每个员工的年薪是多少？
+SELECT name,sal,sal*12
+FROM emp;
+
+# (33).查询时也可以用函数的结果作为字段
+# 孙悟空的职位是销售  name+"的职位是"+job(java中)
+SELECT CONCAT(name,'的职位是',job) FROM emp;
+
+#查看每个员工的工资,奖金,工资+奖金
+# ★数字与NULL进行运算,结果为NULL
+SELECT name,sal,comm,sal+comm
+FROM emp;
+
+# (34).NVL函数 用来替换NULL值
+# NVL(ar1,arg2) 当arg1不为null时则函数返回arg1的值,如果arg1为null则返回arg2的值
+SELECT name,sal,NVL(comm,0) FROM emp;#第一个参数为NULL返回第二个参数值
+
+# (35).字段定义别名
+#我们可以为字段定义别名,也可以给表定义别名。
+# 1.SELECT 字段1 别名1,字段2 别名2 FROM 表名;
+SELECT name ename,sal salary FROM emp;
+SELECT name,sal*12 salary FROM emp;
+
+#★支持的语法
+# 字段名 别名
+SELECT name,sal*12 salary FROM emp;
+# 字段名 as 别名
+SELECT name as ename,sal*12 salary FROM emp;
+# 字段名 as '别名'
+SELECT name as 'ename',sal*12 'salary' FROM emp;
+# 字段名 as "别名"
+SELECT name as "ename",sal*12 "salary" FROM emp;
+#查询表emp中的所有数据
+SELECT * FROM emp;
+
+#[8].练习：
+#1.查询员工表中3号部门工资高于1500的员工信息
+SELECT *
+FROM emp
+WHERE dept_id=3 AND sal>1500;
+#2.查询2号部门员工或者没有领导的员工信息
+SELECT *
+FROM emp
+WHERE dept_id=2 OR manager IS NULL;
+#3.查询有领导的员工姓名,工资按照工资降序排列
+SELECT name,sal
+FROM emp
+WHERE manager IS NOT NULL
+ORDER BY sal DESC;
+#4.查询2号和3号部门的员工姓名和入职日期hiredate按照入职日期降序排列
+SELECT name,hiredate
+FROM emp
+WHERE dept_id IN (2,3)
+ORDER BY hiredate DESC;
+#5.查询名字中包含僧和包含精的员工姓名
+SELECT name
+FROM emp
+WHERE name LIKE '%僧%' OR name LIKE '%精%';
+#6.查询工资高于2000的工作有哪几种？
+SELECT DISTINCT job
+FROM emp
+WHERE sal>2000;
+#7.查询工资升序第4页的2条数据
+SELECT name,sal
+FROM emp
+ORDER BY sal ASC
+LIMIT 6,2;
+
+# (36).聚合函数(也称为多行函数),用来将多条记录统计为一条记录---忽略NULL值
+# MIN():求最大值
+# MAX():求最小值
+# COUNT():统计记录数
+# AVG():求平均值
+# SUM():求和
+# COUNT():统计某一字段的数量
+#查看emp表中所有数据
+SELECT * FROM emp;
+
+#查看所有的员工数量添加别名(员工数量)
+SELECT COUNT(*) 员工数量
+FROM emp;
+
+#查看公司最低收入的员工工资是多少？
+SELECT name,MIN(sal) FROM emp;
+
+#查看工资的最低,最高,平均,求和 并各自加上别名
+SELECT MIN(sal) 最低工资,MAX(sal) 最高工资,AVG(sal) 平均工资,SUM(sal) 工资总和 FROM emp;
+
+#聚合函数忽略NULL值,在AVG中比较明显可以看出这一点,一下仅对4个奖金的人取了平均值,并非11个人
+SELECT MIN(comm) 最低奖金,MAX(comm) 最高奖金,AVG(comm) 平均奖金,SUM(comm) 奖金总和 FROM emp;
+
+#[9].练习：
+#1.查询销售的平均工资
+SELECT job,AVG(sal)
+FROM emp
+WHERE job='销售';
+#2.查询程序员的最高工资
+SELECT job,MAX(sal)
+FROM emp
+WHERE job='程序员';
+#3.查询名字包含精的员工数量
+SELECT COUNT(name)
+FROM emp
+WHERE name LIKE '%精%';
+#4.查看和销售相关的工作一个月工资总和
+SELECT SUM(sal)
+FROM emp
+WHERE job LIKE '%销售%';
+#5.查询2号部门的最高工资和最低工资
+SELECT MAX(sal) 最高工资,MIN(sal) 最低工资
+FROM emp
+WHERE dept_id=2;
+
+# (37).GROUP BY 分组
+#GROUP BY 也是统计服务的,所以是搭配在聚合函数上使用的。
+
+#查看每个部门的平均工资是多少？ORDER BY(排序)--ASC升序,DESC降序
+SELECT dept_id,sal
+FROM emp
+ORDER BY dept_id;
+
+#SELECT字句中不聚合函数中的其他字段必须出现在GROUP BY字句中
+SELECT dept_id,AVG(sal)
+FROM emp
+GROUP BY dept_id;
+
+#每种职位的最高工资是多少？
+SELECT job,MAX(sal)
+FROM emp
+GROUP BY job;
+
+#[10].练习：
+#1.查看每个部门的最高工资
+SELECT dept_id ,MAX(sal)
+FROM emp
+GROUP BY dept_id;
+#2.查看每个部门工资高于2000的人数
+SELECT dept_id,COUNT(*)
+FROM emp
+WHERE sal>2000
+GROUP BY dept_id;
+#3.查询每种工作的最低工资
+SELECT job,MIN(sal)
+FROM emp
+GROUP BY job;
+#4.查看1号部门和2号部门的人数
+SELECT dept_id,COUNT(*)
+FROM emp
+WHERE dept_id IN (1,2) #过滤只看1号和2号部门
+GROUP BY dept_id;
+#5.查询平均工资最高的部门和平均工资
+SELECT AVG(sal) avg,dept_id #查看平均工资和部门
+FROM emp
+GROUP BY dept_id #按照部门分组
+ORDER BY AVG(sal) DESC #平均工资降序排列
+LIMIT 0,1; #取第一条
+# 可以为函数或表达式字段取别名，然后利用别名排序。
+SELECT AVG(sal) avg,dept_id #查看平均工资和部门
+FROM emp
+GROUP BY dept_id #按照部门分组
+ORDER BY avg  DESC
+LIMIT 0,1;
+
+#[11].练习：
+# 查看平均工资大于2000的部门
+SELECT dept_id,AVG(sal) avg
+FROM emp
+GROUP BY dept_id #按照部门分组
+HAVING avg>2000; #HAVING在统计结果之后进行过滤,可过滤函数
+
+# 查看最低工资大于1000的部门的平均工资
+SELECT dept_id,AVG(sal) avg
+FROM emp
+GROUP BY dept_id #按照部门分组
+HAVING MIN(sal)>1000;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
