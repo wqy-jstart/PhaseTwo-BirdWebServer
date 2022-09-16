@@ -218,7 +218,7 @@ DROP DATABASE mydb4;
 #查看有多少个数据库(固定)
 SHOW DATABASES ;
 
-#总结
+# ★总结：
 # DDL语言,数据定义语言,操作数据库对象
 # CREARE,ALTER,DROP
 # 创建表:CREATE TABLE
@@ -592,7 +592,7 @@ SELECT name,sal,job
 FROM emp
 WHERE job LIKE '_骨%';
 
-# 总结
+# ★总结：
 # %X%：字符串中包含'X'
 # %X：字符串以X结尾
 # X%：字符串以X开头
@@ -740,8 +740,11 @@ FROM emp;
 # NVL(ar1,arg2) 当arg1不为null时则函数返回arg1的值,如果arg1为null则返回arg2的值
 SELECT name,sal,NVL(comm,0) FROM emp;#第一个参数为NULL返回第二个参数值
 
-# (35).字段定义别名
+# (35).别名
 #我们可以为字段定义别名,也可以给表定义别名。
+# 为字段定义别名一般多用于:
+# 1:隐藏实际表字段名名
+# 2:为计算表达式或函数的结果只作为字段时定义可读性更好的字段名
 # 1.SELECT 字段1 别名1,字段2 别名2 FROM 表名;
 SELECT name ename,sal salary FROM emp;
 SELECT name,sal*12 salary FROM emp;
@@ -859,67 +862,317 @@ GROUP BY job;
 SELECT dept_id ,MAX(sal)
 FROM emp
 GROUP BY dept_id;
+
 #2.查看每个部门工资高于2000的人数
 SELECT dept_id,COUNT(*)
 FROM emp
 WHERE sal>2000
 GROUP BY dept_id;
+
 #3.查询每种工作的最低工资
 SELECT job,MIN(sal)
 FROM emp
 GROUP BY job;
+
 #4.查看1号部门和2号部门的人数
 SELECT dept_id,COUNT(*)
 FROM emp
 WHERE dept_id IN (1,2) #过滤只看1号和2号部门
 GROUP BY dept_id;
+
 #5.查询平均工资最高的部门和平均工资
 SELECT AVG(sal) avg,dept_id #查看平均工资和部门
 FROM emp
 GROUP BY dept_id #按照部门分组
 ORDER BY AVG(sal) DESC #平均工资降序排列
 LIMIT 0,1; #取第一条
-# 可以为函数或表达式字段取别名，然后利用别名排序。
+#也可以为函数或表达式字段取别名，然后利用别名排序。
 SELECT AVG(sal) avg,dept_id #查看平均工资和部门
 FROM emp
 GROUP BY dept_id #按照部门分组
 ORDER BY avg  DESC
 LIMIT 0,1;
 
+# 查看部门平均工资高于2000的那些部门的平均工资具体是多少?
+# ★聚合函数不能写在WHERE子句中
+# SELECT AVG(sal),dept_id
+# FROM emp
+# WHERE AVG(sal)>2000
+# GROUP BY dept_id;
+# 原因是过滤时机并不相同
+# WHERE子句是添加过滤条件，在查询表中每条记录时，用于筛选记录。(查询表的过程中用于过滤的)
+
+# (38).想利用聚合函数的结果进行过滤时，应当已经是将表中数据查询出来(此时是WHERE过滤的时机)，并且对结果集进行了统计后
+# 得到的结果集再进行过滤
+# HAVING子句。HAVING子句是跟在GOURP BY子句之后，对分组统计的出的结果集再进行过滤的。
+
 #[11].练习：
-# 查看平均工资大于2000的部门
+#1. 查看平均工资大于2000的部门的平均工资是多少?
 SELECT dept_id,AVG(sal) avg
 FROM emp
 GROUP BY dept_id #按照部门分组
 HAVING avg>2000; #HAVING在统计结果之后进行过滤,可过滤函数
 
-# 查看最低工资大于1000的部门的平均工资
-SELECT dept_id,AVG(sal) avg
+#2. 查看最低工资大于1000的部门的平均工资
+SELECT dept_id,MIN(sal),AVG(sal) avg
 FROM emp
 GROUP BY dept_id #按照部门分组
 HAVING MIN(sal)>1000;
 
+#3. 查询每个部门的工资总和,只查询有领导的员工,并且要求工资总和大于5400
+SELECT dept_id,SUM(sal) 工资总和 #这里别名不能用sal
+FROM emp
+WHERE manager IS NOT NULL
+GROUP BY dept_id
+HAVING 工资总和>5400;#WHERE先发挥作用,HAVING后发挥作用
 
+# (39).子查询
+# 嵌套在其他SQL语句中的查询语句被称为叫做"子查询"
+# 子查询通常用于要基于一个查询结果再进行操作的地方
 
+#1. 查看比公司平均工资高的那些员工的名字和工资是多少？
+#先求公司的平均工资
+SELECT AVG(sal)
+FROM emp;
+#类似于Java,将求平均工资部分挪到下面条件语句中加上括号优先执行(嵌套)
+SELECT name,sal
+FROM emp
+WHERE sal>(SELECT AVG(sal)
+           FROM emp);#因为括号里的先执行故可以用WHERE
 
+#2. 查询工资高于2号部门平均工资的员工
+#先查询2号部门的平均工资
+SELECT AVG(sal)
+FROM emp
+WHERE dept_id=2;
+#再讲查询到的平均工资嵌套进下面WHERE条件中
+SELECT *
+FROM emp
+WHERE sal>(SELECT AVG(sal)
+           FROM emp
+           WHERE dept_id=2);
 
+#3. 查询比沙僧工资低的员工信息
+#先查看沙僧的工资
+SELECT sal
+FROM emp
+WHERE name='沙僧';
+#再将查询的沙僧工资嵌套进下面WHERE条件中
+SELECT *
+FROM emp
+WHERE sal<(SELECT sal
+           FROM emp
+           WHERE name='沙僧');
 
+#4. 查询和孙悟空同职位的员工信息
+#先查询孙悟空的职位job
+SELECT job
+FROM emp
+WHERE name='孙悟空';
+#再讲查询的职位嵌套进下面WHERE条件中
+SELECT *
+FROM emp
+WHERE job=(SELECT job
+           FROM emp
+           WHERE name='孙悟空');
 
+#5. 查询和公司最低工资员工同属于一个部门的员工信息？
+#先查询公司最低工资
+SELECT MIN(sal)
+FROM emp;
+#将查询的最低工资嵌套进下面查询部门的WHERE条件中
+SELECT dept_id
+FROM emp
+WHERE sal=(SELECT MIN(sal)
+           FROM emp);
+#再讲查询的部门嵌套进下面查询信息的WHERE条件中
+SELECT *
+FROM emp
+WHERE dept_id = (SELECT dept_id
+                 FROM emp
+                 WHERE sal=(SELECT MIN(sal)
+                            FROM emp));
 
+#6. 查询比2号和3号部门工资都高的员工名字和工资？
+#(第1种方法).用ORDER BY排序DESC降序和LIMIT取第1个最大值
+SELECT sal
+FROM emp
+WHERE dept_id IN (2,3)
+ORDER BY sal DESC
+LIMIT 0,1;
+SELECT name,sal
+FROM emp
+WHERE sal>(SELECT sal
+           FROM emp
+           WHERE dept_id IN (2,3)
+           ORDER BY sal DESC
+           LIMIT 0,1);
+#(第2种方法).用MAX获取一列的工资最大值
+SELECT MAX(sal)
+FROM emp
+WHERE dept_id IN(2,3);
+SELECT name,sal
+FROM emp
+WHERE sal>(SELECT MAX(sal)
+           FROM emp
+           WHERE dept_id IN(2,3));
+#(第3种方法).使用ALL关键字
+SELECT name,sal
+FROM emp
+WHERE sal>ALL(SELECT sal
+              FROM emp
+              WHERE dept_id IN(2,3));
+#7.查询大于2号和3号部门工资最低的员工的名字和工资,共9个
+SELECT name,sal
+FROM emp
+WHERE sal>ANY(SELECT sal
+              FROM emp
+              WHERE dept_id IN(2,3));
 
+# ★总结：
+# 子查询分类(按查询结果集分类)：
+# 单行单列子查询(结果集只有一个值)
+# 多行单列子查询(结果集有多个值)
+# 多行多列子查询(结果集是一个表)
+#
+# 单行子查询通常用于过滤条件中使用
+# 单行单列可以配合>,>=,=,<,<=使用
+# 多行单列可以配合ANY,ALL,IN使用.
+# 例如
+# >ALL(子查询)：大于子查询结果集中最大的
+# <ALL(子查询)：小于子查询结果集中最小的
+# >ANY(子查询)：大于子查询结果集中最小的
+# <ANY(子查询)：小于子查询结果集中最大的
+#
+# 多行多列子查询(结果集是一个表),通常就当做一张表使用,可以跟在FROM字句中
+# 或者跟在DDL语句中基于一个查询结果集创建表.
 
+# (40).将1号部门员工信息单独定义一张表名为emp_dept1;
+CREATE TABLE emp_dept1
+AS
+SELECT * FROM emp WHERE dept_id=1;
 
+SELECT * FROM emp_dept1;
 
+# (41).如果创建表基于的子查询中某个字段是一个表达式或函数时,要给该字段取别名,
+# 那么创建出来的表的该字段会以别名作为字段名.
 
+#1.创建一张表emp_dept_sal.该表记录了每个部门的薪资情况,包含最高工资,最低工资,
+# 平均工资,工资总和,部门编号
+CREATE TABLE emp_dept_sal
+AS
+SELECT MAX(sal) max_sal,MIN(sal) min_sal,AVG(sal) avg_sal,SUM(sal) sum_sal,dept_id
+FROM emp
+GROUP BY dept_id;#按照部门进行分组
+#最后查询并验证表emp_dept_sal的所有数据
+SELECT * FROM emp_dept_sal;
 
+#2.创建一张表emp_annual_salary,记录每个员工的名字,工资,年薪和部门,年薪字段用:a_salary,工资用salary
+CREATE TABLE emp_annual_salary
+AS
+SELECT name,sal salary,sal*12 a_salary,dept_id
+FROM emp;
+#最后查询并验证表emp_annual_salary的所有数据
+SELECT * FROM emp_annual_salary;
 
+#3.查询emp_annual_salary表中名字里含"精"的员工年薪是多少？
+SELECT name,a_salary
+FROM emp_annual_salary
+WHERE name LIKE '%精%';
 
+SELECT * FROM dept;
+# (42).★关联查询
+# 查询结果集中的数据来自多张表,而表与表中数据之间的对应关系就是关联关系
+# 两张表就可以产生关联关系了,关联关系分为三类
+# 1：一对一  A表中的1条记录只唯一对应B表中的1条记录
+# 2：一对多  A表中的1条记录可以对应B表中的多条记录
+# 3：多对多  A表与B表双向都是一对多时,就是多对多关系.
+#
+# 关联查询就是基于多张表联合查询数据而形成一个结果集的过程,在关联查询中一个至关重要的点就是关联条件
+# ：N张表关联查询至少要有N-1个连接条件.
+# 缺失连接条件会产生笛卡尔积,该查询结果集的记录数是关联表中所有记录数乘积的结果,它通常是一个无意义
+# 的结果集，要尽量避免产生.
+# ★关联查询语法:
+# SELECT 字段
+# FROM 表A，表B[，表C，表D...]
+# WHERE 过滤条件
+# AND 连接条件
+# 注意:连接条件必须与过滤条件同时成立!!
 
+#笛卡尔积的产生：产生了44条数据，将emp表每条记录都与dept表每条记录产生一条记录。
+SELECT *
+FROM emp,dept;
 
+# 当表中出现了同名字段时，为了查询区分字段来自于哪张表，我们可以在字段名前用"表名."来标识
+SELECT emp.name,emp.sal,emp.dept_id,dept.name,dept.loc
+FROM emp,dept;
 
+# 还可以为表取别名,用"别名,字段名"也可以标明查询的是那张表上的字段
+SELECT e.name,e.sal,e.dept_id,d.name,d.loc
+FROM emp e,dept d;
 
+# (43).实际关联查询要"添加连接条件"
+# 连接条件最常见的就是等值连接。
+#1.查看每个员工的名字，工资，部门编号以及所在的部门名称和所在地区
+SELECT e.name,e.sal,e.dept_id,d.name,d.loc
+FROM emp e,dept d
+WHERE e.dept_id=d.id;
+#     注:emp表上的dept_id保存的值是dept表中主键字段的值，因此emp表中dept_id与dept表id值
+# 一样的记录才会被查询出来作为一条记录显示在结果集中。
+# 当一张表上的某个字段保存的是另一张表中的主键字段值时，这个字段就被称为"外键"
+# 关联关系中经常用A.主键=B.外键作为连接条件。
 
+#2.查看在天庭工作的人都有谁？
+SELECT e.name,e.sal,e.dept_id,d.name,d.loc
+FROM emp e,dept d
+WHERE e.dept_id=d.id #连接条件
+  AND d.loc = '天庭'; #过滤条件
 
+#3.查询表emp中工资最高的人住哪loc？
+#先查询工资最高是多少？
+SELECT MAX(sal)
+FROM emp;
+#再查询工资最高的人是谁？
+SELECT name
+FROM emp
+WHERE sal=(SELECT MAX(sal)
+           FROM emp);
 
+#最后查询工资最高的人住哪？
+SELECT d.loc
+FROM emp e,dept d
+WHERE e.dept_id = d.id
+  AND e.name=(SELECT name
+              FROM emp
+              WHERE sal=(SELECT MAX(sal)
+                         FROM emp));
 
+#4.查询名字里含有"飞"的人来自哪里？
+#先查询名字里含有"飞"的人
+SELECT name
+FROM emp
+WHERE name LIKE '%飞%';
+#再连接第二张表查位置过滤条件为第一张表的名字含"飞"
+SELECT d.loc
+FROM emp e,dept d
+WHERE e.dept_id=d.id #连接条件
+  AND e.name=(SELECT name
+              FROM emp
+              WHERE name LIKE '%飞%');
 
+#5.查看天庭的最高工资
+SELECT d.loc,MAX(e.sal)
+FROM emp e,dept d
+WHERE e.dept_id=d.id #连接条件
+  AND d.loc='天庭'
+GROUP BY d.loc;
+
+#6.查看每个地区的平均工资(第四个地区没有人)
+SELECT d.loc,AVG(e.sal)
+FROM emp e,dept d
+WHERE e.dept_id=d.id
+GROUP BY d.loc;
+
+#查询两张表的所有数据
+SELECT * FROM dept;
+SELECT * FROM emp;

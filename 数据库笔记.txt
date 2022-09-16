@@ -631,3 +631,425 @@ ORDER BY sal LIMIT 6,3;
 SELECT name,sal
 FROM emp
 ORDER BY sal LIMIT 8,4;
+
+
+# 查询的字段可以使用表达式
+# 查看每个员工的年薪是多少?
+SELECT name,sal,sal*12 FROM emp;
+# 查询时也可以用函数的结果作为字段
+# 孙悟空的职位是销售   name+"的职位是"+job
+SELECT CONCAT(name,'的职位是',job) FROM emp;
+
+# 查看每个员工的工资，奖金，工资+奖金
+# 数字与NULL运算结果就为NULL
+SELECT name,sal,comm,sal+comm FROM emp;
+
+#NVL函数 用来替换NULL值
+# NVL(arg1,arg2)  当arg1不为NULL时则函数返回arg1的值，如果arg1为NULL则返回arg2的值
+SELECT name,sal,NVL(comm,0) FROM emp;
+
+# 别名
+# 我们可以为字段定义别名，也可以给表定义别名。
+# 为字段定义别名一般多用于:
+# 1:隐藏实际表字段名名
+# 2:为计算表达式或函数的结果只作为字段时定义可读性更好的字段名
+SELECT name ename,sal salary FROM emp;
+SELECT name,sal*12 salary FROM emp;
+
+# 支持的语法:
+# 字段名 别名
+SELECT name,sal*12 salary FROM emp;
+# 字段名 as 别名
+SELECT name as ename,sal*12 salary FROM emp;
+# 字段名 as '别名'
+SELECT name as 'ename',sal*12 salary FROM emp;
+# 字段名 as "别名"
+SELECT name as "ename",sal*12 salary FROM emp;
+
+
+# 练习:
+# 1. 查询员工表中3号部门工资高于1500的员工信息
+SELECT * FROM emp WHERE dept_id=3 AND sal>1500
+# 2. 查询2号部门员工或者没有领导的员工信息
+SELECT * FROM emp WHERE dept_id=2 OR manager IS NULL
+# 3. 查询有领导的员工姓名,工资按照工资降序排序
+SELECT name,sal
+FROM emp
+WHERE manager IS NOT NULL
+ORDER BY sal DESC
+# 4. 查询2号和3号部门的员工姓名和入职日期hiredate按照入职日期降序排序
+SELECT name,hiredate
+FROM emp
+WHERE dept_id IN (2,3)
+ORDER BY hiredate DESC
+# 5. 查询名字中包含僧和包含精的员工姓名
+SELECT name
+FROM emp
+WHERE name LIKE '%僧%' OR name LIKE '%精%'
+# 6. 查询工资高于2000的工作有哪几种?
+SELECT DISTINCT job
+FROM emp
+WHERE sal>2000
+# 7. 查询工资升序第4页的2条数据
+SELECT *
+FROM emp
+ORDER BY sal
+LIMIT 6,2
+
+# 聚合函数(也称为多函数).聚合函数是用来多条记录统计为一条记录
+# MIN():求最小值
+# MAX():求最大值
+# COUNT():统计记录数
+# AVG():求平均值
+# SUM():求和
+查看公司收入收入的员工工资是多少?
+SELECT MIN(sal) FROM emp
+
+SELECT MIN(sal) 最低工资 ,MAX(sal) 最高工资,AVG(sal) 平均工资,SUM(sal) 工资总和 FROM emp;
+
+#聚合函数忽略NULL值，在AVG中比较明显可以看出这一点，以下仅对4个有奖金的人取了个并均值，并非11个人的平均值
+SELECT MIN(comm),MAX(comm),AVG(comm),SUM(comm) FROM emp;
+
+SELECT * FROM emp
+
+
+练习:
+# 1. 查询销售的平均工资
+SELECT AVG(sal)
+FROM emp
+WHERE job='销售'
+# 2. 查询程序员的最高工资
+SELECT MAX(sal)
+FROM emp
+WHERE job='程序员'
+3. 查询名字包含精的员工数量
+SELECT COUNT(*)
+FROM emp
+WHERE name LIKE '%精%'
+4. 查询和销售相关的工作一个月工资总和
+SELECT SUM(sal)
+FROM emp
+WHERE job LIKE '%销售%'
+
+5. 查询2号部门的最高工资和最低工资起别名
+SELECT MIN(sal) 最低工资,MAX(sal) 最高工资
+FROM emp
+WHERE dept_id=2
+
+# GROUP BY子句，分组。
+# GROUP BY 也是为统计服务的，所以是搭配在聚合函数上使用的。
+
+# 查看每个部门的平均工资是多少?
+SELECT sal,dept_id FROM emp ORDER BY dept_id;
+
+# SELECT子句中不在聚合函数中的其他字段必须出现在GROUP BY子句中！
+SELECT AVG(sal),dept_id FROM emp GROUP BY dept_id;
+
+# 每种职位的最高工资是多少?
+SELECT MAX(sal),job FROM emp GROUP BY job
+
+# 练习
+# 1.查询每个部门的最高工资
+SELECT MAX(sal),dept_id FROM emp GROUP BY dept_id
+# 2.查询每个部门工资高于2000的人数
+SELECT COUNT(*)
+FROM emp
+WHERE sal>2000
+GROUP BY dept_id;
+# 3.查询每种工作的最低工资
+SELECT MIN(sal),job FROM emp GROUP BY job;
+# 4.查询1号部门和2号部门的人数
+SELECT COUNT(*),dept_id
+FROM emp
+WHERE dept_id IN (1,2)
+GROUP BY dept_id
+# 5.查询平均工资最高的部门id和平均工资
+SELECT AVG(sal),dept_id
+FROM emp
+GROUP BY dept_id
+ORDER BY AVG(sal) DESC
+LIMIT 0,1;
+
+#可以为函数或表达式字段取别名，然后利用别名排序。
+SELECT AVG(sal) avg,dept_id
+FROM emp
+GROUP BY dept_id
+ORDER BY avg  DESC
+LIMIT 0,1;
+
+# 查看部门平均工资高于2000的那些部门的平均工资具体是多少?
+# 聚合函数不能写在WHERE子句中
+SELECT AVG(sal),dept_id
+FROM emp
+WHERE AVG(sal)>2000
+GROUP BY dept_id
+
+# 原因是过滤时机并不相同
+# WHERE子句是添加过滤条件，在查询表中每条记录时，用于筛选记录。(查询表的过程中用于过滤的)
+
+# 想利用聚合函数的结果进行过滤时，应当已经是将表中数据查询出来(此时是WHERE过滤的时机)，并且对结果集进行了统计后
+# 得到的结果集再进行过滤
+# HAVING子句。HAVING子句是跟在GOURP BY子句之后，对分组统计的出的结果集再进行过滤的。
+SELECT AVG(sal),dept_id
+FROM emp
+GROUP BY dept_id
+HAVING AVG(sal)>2000;
+
+# 查看部门最低工资大于1000的部门的平均工资是多少?
+SELECT AVG(sal),dept_id
+FROM emp
+GROUP BY dept_id
+HAVING MIN(sal)>1000
+
+
+# 查询每个部门的工资总和,只查询有领导的员工, 并且要求工资总和大于5400.
+SELECT SUM(sal),dept_id
+FROM emp
+WHERE manager IS NOT NULL
+GROUP BY dept_id
+HAVING SUM(sal) > 5400
+
+
+子查询
+嵌套在其他SQL语句中的查询语句被称为叫做"子查询"
+子查询通常用于要基于一个查询结果再进行操作的地方
+
+# 查看比公司平均工资高的那些员工的名字和工资是多少?
+# 公司的平均工资
+SELECT AVG(sal) FROM emp;
+
+SELECT name,sal
+FROM emp
+WHERE sal>(SELECT AVG(sal) FROM emp)
+
+
+查询工资高于2号部门平均工资的员工信息
+SELECT name,sal
+FROM emp
+WHERE sal>(SELECT AVG(sal) FROM emp WHERE dept_id=2)
+
+查询比沙僧工资低的员工信息?
+SELECT name,sal
+FROM emp
+WHERE sal<(SELECT sal FROM emp WHERE name='沙僧')
+
+
+# 查询和孙悟空同职位的员工信息?
+SELECT *
+FROM emp
+WHERE job = (SELECT job FROM emp WHERE name='孙悟空')
+
+# 查询和公司最低工资员工同属一个部门的员工信息?
+SELECT *
+FROM emp
+WHERE dept_id = (SELECT dept_id
+                 FROM emp
+                 WHERE sal=(SELECT MIN(sal) FROM emp))
+
+
+# 查询比2号和3号部门工资都高的员工名字和工资?
+SELECT *
+FROM emp
+WHERE sal>ALL(SELECT sal FROM emp WHERE dept_id IN (2,3))
+
+# 查询比2号和3号部门工资任意一个员工工资高的员工信息?
+SELECT *
+FROM emp
+WHERE sal>ANY(SELECT sal FROM emp WHERE dept_id IN (2,3))
+
+# 子查询分类(按查询结果集分类):
+# 单行单列子查询(结果集只有1个值)
+# 多行单列子查询(结果集有多个值)
+# 多行多列子查询(结果集是一个表)
+
+# 单列子查询通常用于过滤条件中使用。
+# 单行单列可以配合>,>=,=,<,<=使用
+# 多行单列可以配合ANY,ALL,IN使用。
+# 例如:
+# >ALL(子查询):大于子查徐结果集中最大的
+# <ALL(子查询):小于子查询结果集中最小的
+# >ANY(子查询):大于子查询结果集中最小的
+# <ANY(子查询):小于子查询结果集中最大的
+# IN(子查询):等于子查询结果集中的任意一个值
+
+# 多行多列子查询(结果集是一个表),通常就当做一张表使用，可以跟在FROM字句中
+# 或者跟在DDL语句中基于一个查询结果集创建表。
+# 将1号部门员工信息单独定义一张表名为emp_dept1
+CREATE TABLE emp_dept1
+AS
+SELECT * FROM emp WHERE dept_id=1;
+
+SELECT * FROM emp_dept1
+
+如果创建表基于的子查询中某个字段是一个表达式或函数时，要给该字段取别名，那么创建出来的表该字段会以别名作为
+字段名。
+创建一张表emp_dept_sal.该表记录了每个部门的薪资情况，包含最高工资，最低工资，平均工资，工资总和，部门编号
+
+CREATE TABLE emp_dept_sal
+AS
+SELECT MAX(sal) max_sal,MIN(sal) min_sal,AVG(sal) avg_sal,SUM(sal) sum_sal,dept_id
+FROM emp
+GROUP BY dept_id
+
+SELECT * FROM emp_dept_sal
+查看每个部门的最低薪水是多少?
+SELECT min_sal FROM emp_dept_sal
+
+
+创建一张表emp_annual_salary，记录每个员工的名字，工资，年薪和部门，年薪字段用:a_salary,工资用salary
+CREATE TABLE emp_annual_salary
+AS
+SELECT name,sal salary,sal*12 a_salary,dept_id
+FROM emp
+
+SELECT * FROM emp_annual_salary
+
+# 名字里含"精"的员工年薪是多少?
+SELECT name,a_salary
+FROM emp_annual_salary
+WHERE name LIKE '%精%'
+
+
+SELECT * FROM dept
+关联查询
+查询结果集中的数据来自多张表，而表与表中数据之间的对应关系就是关联关系
+
+两张表就可以产生关联关系了，关联关系分为三类:
+1:一对一  A表中的1条记录只唯一对应B表中的1条记录
+2:一对多  A表中的1条记录可以对应B表中的多条记录
+3:多对多  A表与B表双向都是一对多时，就是多对多关系。
+
+关联查询就是基于多张表联合查询数据而形成一个结果集的过程，在关联查询中一个至关重要的点就是关联条件
+原则:N张表关联查询至少要有N-1个连接条件。
+缺失连接条件会产生笛卡尔积，该查询结果集的记录数是关联表中所有记录数乘积的结果，它通常是一个无意义的结果集，要
+尽量避免产生
+
+关联查询语法:
+# SELECT 字段
+# FROM 表A，表B[，表C，表D...]
+# WHERE 过滤条件
+# AND 连接条件
+# 注意:连接条件必须与过滤条件同时成立!!
+
+# 笛卡尔积:产生了44条数据，将emp表每条记录都与dept表每条记录产生一条记录。
+SELECT *
+FROM dept
+
+# 当表中出现了同名字段时，为了查询区分字段来自于哪张表，我们可以在字段名前用"表名."来标识
+SELECT emp.name,emp.sal,emp.dept_id,dept.name,dept.loc
+FROM emp,dept
+
+# 还可以为表取别名，用"别名.字段名"也可以标明查询的是那张表上的字段
+SELECT e.name,e.sal,e.dept_id,d.name,d.loc
+FROM emp e,dept d
+
+# 实际关联查询要添加连接条件
+# 连接条件最常见的就是等值连接。
+# 查看每个员工的名字，工资，部门编号以及所在的部门名称和所在地区
+SELECT e.name,e.sal,e.dept_id,d.name,d.loc
+FROM emp e,dept d
+WHERE e.dept_id=d.id
+注:emp表上的dept_id保存的值是dept表中主键字段的值，因此emp表中dept_id与dept表id值一样的记录才会被查询
+出来作为一条记录显示在结果集中。
+当一张表上的某个字段保存的是另一张表中的主键字段值时，这个字段就被称为"外键"
+关联关系中经常用A.主键=B.外键作为连接条件。
+
+查看在天庭工作的人都有谁?
+SELECT e.name,e.sal,e.job,d.name,d.loc
+FROM emp e,dept d
+WHERE e.dept_id=d.id
+AND d.loc='天庭'
+
+
+名字里含“飞”的人来自哪里?
+SELECT e.name,d.loc
+FROM emp e,dept d
+WHERE e.dept_id=d.id
+AND e.name LIKE '%飞%'
+
+天庭的最高工资?
+SELECT MAX(e.sal),d.loc
+FROM emp e,dept d
+WHERE e.dept_id=d.id
+AND d.loc='天庭'
+GROUP BY d.loc
+
+查看每个地区的平均工资?
+SELECT AVG(e.sal),d.loc
+FROM emp e,dept d
+WHERE e.dept_id=d.id
+GROUP BY d.loc
+
+
+练习
+1. 查询工资大于等于3000的员工姓名和工资
+2. 查询1号部门的员工姓名和工作
+3. 查询不是程序员的员工姓名和工作(两种写法)
+4. 查询奖金等于300的员工姓名,工资和工作
+5. 查询1号部门工资大于2000的员工信息
+6. 查询3号部门或工资等于5000的员工信息
+7. 查询出CEO和项目经理的名字
+8. 查询工资为3000,1500和5000的员工信息
+9. 查询工资不等于3000,1500和5000的员工信息
+10. 查询工资在1000到2000之间的员工信息
+11. 查询工资在1000到2000以外的员工信息
+12. 查询有领导的员工姓名和领导id
+13. 查询没有领导的员工姓名和领导id
+14. 查询员工表中出现了哪几种不同的工作
+15. 查询员工表中出现了那几个部门的id
+16. 查询姓孙的员工姓名
+17. 查询名字最后一个字是精的员工信息
+18. 查询工作中包含销售的员工信息
+19. 查询工作中第二个字是售的员工信息
+20. 查询名字中包含僧的员工并且工资高于2000的员工信息
+21. 查询1号和2号部门中工作以市开头的员工信息
+22. 查询所有员工的姓名和工资 按照工资升序排序
+23. 查询所有员工的姓名和工资 按照工资降序排序
+24. 查询所有员工姓名 工资和部门id 按照部门id降序排序,如果部门id一致则按照工资升序排序
+25. 查询员工表中3号部门工资高于1500的员工信息
+26. 查询2号部门员工或者没有领导的员工信息
+27. 查询有领导的员工姓名,工资按照工资降序排序
+28. 查询2号和3号部门的员工姓名和入职日期hiredate 按照入职日期降序排序
+29. 查询名字中包含僧和包含精的员工姓名
+30. 查询工资高于2000的工作有哪几种?
+31. 查询工资最高的前三个员工
+32. 查询员工表按照id排序, 第2页的5条数据
+33. 查询员工表按照id排序, 第3页的4条数据
+34. 查询3号部门工资最低的员工姓名和工资
+35. 查询工作不是人事的员工中工资降序第二页的3条数据
+36. 查询没有领导的员工和3号部门的员工,工资降序取前三条
+37. 查询2号部门的最高工资
+40. 查询有领导的员工中工资在1000到2000之间的人数
+41. 查询3号部门的工资总和
+42. 查询程序员和销售的总人数
+43. 查询1号部门有领导的员工的平均工资
+44. 查询1号部门的最低工资和最高工资
+45. 查询和销售相关的工作人数
+46. 查询工资不是1500和3000的员工人数
+47. 查询1号部门出现了哪几种工作
+48. 查询名字包含精的员工数量
+49. 查询和销售相关的工作一个月工资总和
+50. 查询2号部门的最高工资和最低工资起别名
+51.查询每个部门的平均工资
+52. 查询每种工作的平均工资
+53. 查询每个部门的最高工资
+54. 查询每种工作的最低工资
+55. 查询每个部门工资高于2000的人数
+56. 查询每个部门有领导的员工人数
+57. 查询1号部门每种工作的最低工资
+58. 查询平均工资最高的部门id和平均工资
+59. 查询每个部门的平均工资,要求平均工资大于2000
+60. 查询每种工作的人数,只查询人数大于1的
+61. 查询每个部门的工资总和,只查询有领导的员工, 并且要求工资总和大于5400.
+62. 查询每个部门的平均工资, 只查询工资在1000到3000之间的,并且过滤掉平均工资低于2000的
+
+
+
+
+
+
+
+
+
+
+
