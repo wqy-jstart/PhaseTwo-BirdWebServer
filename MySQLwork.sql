@@ -151,9 +151,11 @@ FROM emp
 ORDER BY id
     LIMIT 8,4;
 # 34. 查询3号部门工资最低的员工姓名和工资
-SELECT name,MIN(sal),dept_id
+SELECT name,sal,dept_id
 FROM emp
-WHERE dept_id=3;
+WHERE dept_id=3
+ORDER BY sal
+    LIMIT 0,1;
 # 35. 查询工作不是人事的员工中工资降序第二页的3条数据
 SELECT *
 FROM emp
@@ -260,10 +262,10 @@ FROM emp
 GROUP BY dept_id
 HAVING avg>2000;
 # 60. 查询每种工作的人数,只查询人数大于1的
-SELECT job,COUNT(*) 人数
+SELECT job,COUNT(*) num
 FROM emp
 GROUP BY job
-HAVING 人数>1;
+HAVING num>1;
 # 61. 查询每个部门的工资总和,只查询有领导的员工, 并且要求工资总和大于5400
 SELECT dept_id,SUM(sal) sum
 FROM emp
