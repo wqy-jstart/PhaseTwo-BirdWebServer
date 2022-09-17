@@ -737,15 +737,15 @@ SELECT name,sal,comm,sal+comm
 FROM emp;
 
 # (34).NVL函数 用来替换NULL值
-# NVL(ar1,arg2) 当arg1不为null时则函数返回arg1的值,如果arg1为null则返回arg2的值
+# NVL(arg1,arg2) 当arg1不为null时则函数返回arg1的值,如果arg1为null则返回arg2的值
 SELECT name,sal,NVL(comm,0) FROM emp;#第一个参数为NULL返回第二个参数值
 
 # (35).别名
 #我们可以为字段定义别名,也可以给表定义别名。
 # 为字段定义别名一般多用于:
-# 1:隐藏实际表字段名名
+# 1:隐藏实际表字段名
 # 2:为计算表达式或函数的结果只作为字段时定义可读性更好的字段名
-# 1.SELECT 字段1 别名1,字段2 别名2 FROM 表名;
+# SELECT 字段1 别名1,字段2 别名2 FROM 表名;
 SELECT name ename,sal salary FROM emp;
 SELECT name,sal*12 salary FROM emp;
 
@@ -797,7 +797,6 @@ ORDER BY sal ASC
 # (36).聚合函数(也称为多行函数),用来将多条记录统计为一条记录---忽略NULL值
 # MIN():求最大值
 # MAX():求最小值
-# COUNT():统计记录数
 # AVG():求平均值
 # SUM():求和
 # COUNT():统计某一字段的数量
@@ -809,7 +808,8 @@ SELECT COUNT(*) 员工数量
 FROM emp;
 
 #查看公司最低收入的员工工资是多少？
-SELECT name,MIN(sal) FROM emp;
+#在此不能加name,dept_id等字段,因为这些字段的值不唯一,默认所属条件第一个
+SELECT MIN(sal) FROM emp;
 
 #查看工资的最低,最高,平均,求和 并各自加上别名
 SELECT MIN(sal) 最低工资,MAX(sal) 最高工资,AVG(sal) 平均工资,SUM(sal) 工资总和 FROM emp;
@@ -847,7 +847,7 @@ SELECT dept_id,sal
 FROM emp
 ORDER BY dept_id;
 
-#SELECT字句中不聚合函数中的其他字段必须出现在GROUP BY字句中
+#SELECT字句中不在聚合函数中的其他字段必须出现在GROUP BY字句中！
 SELECT dept_id,AVG(sal)
 FROM emp
 GROUP BY dept_id;
@@ -892,13 +892,22 @@ FROM emp
 GROUP BY dept_id #按照部门分组
 ORDER BY avg  DESC
     LIMIT 0,1;
+#分步写法：先查询按部门分组的平均工资最高值,再嵌套对应某一个部门
+SELECT dept_id,AVG(sal)
+FROM emp
+GROUP BY dept_id
+HAVING AVG(sal)=(SELECT AVG(sal) avg
+                 FROM emp
+                 GROUP BY dept_id
+                 ORDER BY avg DESC
+                 LIMIT 0,1);
 
 # 查看部门平均工资高于2000的那些部门的平均工资具体是多少?
 # ★聚合函数不能写在WHERE子句中
 # SELECT AVG(sal),dept_id
     # FROM emp
-               # WHERE AVG(sal)>2000
-        # GROUP BY dept_id;
+    # WHERE AVG(sal)>2000
+    # GROUP BY dept_id;
 # 原因是过滤时机并不相同
 # WHERE子句是添加过滤条件，在查询表中每条记录时，用于筛选记录。(查询表的过程中用于过滤的)
 
@@ -928,7 +937,7 @@ HAVING 工资总和>5400;#WHERE先发挥作用,HAVING后发挥作用
 
 # (39).子查询
 # 嵌套在其他SQL语句中的查询语句被称为叫做"子查询"
-# 子查询通常用于要基于一个查询结果再进行操作的地方
+# 子查询通常用于要基于一个★"查询结果"再进行操作的地方
 
 #1. 查看比公司平均工资高的那些员工的名字和工资是多少？
 #先求公司的平均工资
@@ -985,7 +994,7 @@ SELECT dept_id
 FROM emp
 WHERE sal=(SELECT MIN(sal)
            FROM emp);
-#再讲查询的部门嵌套进下面查询信息的WHERE条件中
+#再将查询的部门嵌套进下面查询信息的WHERE条件中
 SELECT *
 FROM emp
 WHERE dept_id = (SELECT dept_id
@@ -1044,7 +1053,7 @@ WHERE sal>ANY(SELECT sal
 # >ANY(子查询)：大于子查询结果集中最小的
 # <ANY(子查询)：小于子查询结果集中最大的
 #
-# 多行多列子查询(结果集是一个表),通常就当做一张表使用,可以跟在FROM字句中
+# 多行多列子查询(结果集是一个表),通常就当做一张表使用,可以跟在FROM字句中----AS关键字
 # 或者跟在DDL语句中基于一个查询结果集创建表.
 
 # (40).将1号部门员工信息单独定义一张表名为emp_dept1;
@@ -1107,7 +1116,7 @@ FROM emp,dept;
 SELECT emp.name,emp.sal,emp.dept_id,dept.name,dept.loc
 FROM emp,dept;
 
-# 还可以为表取别名,用"别名,字段名"也可以标明查询的是那张表上的字段
+# 还可以为表取别名,用"别名.字段名"也可以标明查询的是那张表上的字段
 SELECT e.name,e.sal,e.dept_id,d.name,d.loc
 FROM emp e,dept d;
 
@@ -1119,14 +1128,14 @@ FROM emp e,dept d
 WHERE e.dept_id=d.id;
 #     注:emp表上的dept_id保存的值是dept表中主键字段的值，因此emp表中dept_id与dept表id值
 # 一样的记录才会被查询出来作为一条记录显示在结果集中。
-# 当一张表上的某个字段保存的是另一张表中的主键字段值时，这个字段就被称为"外键"
+# ★当一张表上的某个字段保存的是另一张表中的主键字段值时，这个字段就被称为"外键"
 # 关联关系中经常用A.主键=B.外键作为连接条件。
 
 #2.查看在天庭工作的人都有谁？
 SELECT e.name,e.sal,e.dept_id,d.name,d.loc
 FROM emp e,dept d
-WHERE e.dept_id=d.id #连接条件
-AND d.loc = '天庭'; #过滤条件
+WHERE e.dept_id=d.id #过滤条件
+AND d.loc = '天庭'; #连接条件
 
 #3.查询表emp中工资最高的人住哪loc？
 #先查询工资最高是多少？
@@ -1155,16 +1164,16 @@ WHERE name LIKE '%飞%';
 #再连接第二张表查位置过滤条件为第一张表的名字含"飞"
 SELECT d.loc
 FROM emp e,dept d
-WHERE e.dept_id=d.id #连接条件
-AND e.name=(SELECT name
+WHERE e.dept_id=d.id #过滤条件
+AND e.name=(SELECT name #连接条件
             FROM emp
             WHERE name LIKE '%飞%');
 
 #5.查看天庭的最高工资
 SELECT d.loc,MAX(e.sal)
 FROM emp e,dept d
-WHERE e.dept_id=d.id #连接条件
-AND d.loc='天庭'
+WHERE e.dept_id=d.id #过滤条件
+AND d.loc='天庭'#连接条件
 GROUP BY d.loc;
 
 #6.查看每个地区的平均工资(第四个地区没有人)
