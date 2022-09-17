@@ -81,9 +81,9 @@ DROP DATABASE mydb2;
 
 #(7).创建表(表中所有字段的默认值为null)
 # CREATE TABLE 表名(-------★不给长度默认11位
-#     列名1 类型[(长度)] [DEFAULT 默认值] [约束条件],
-#     列名2 类型...
-# )[CHARSET=utf8/gbk]
+                                     #     列名1 类型[(长度)] [DEFAULT 默认值] [约束条件],
+                                     #     列名2 类型...
+                                         # )[CHARSET=utf8/gbk]
 
 # 创建userinfo表
 CREATE TABLE userinfo(
@@ -147,8 +147,8 @@ CREATE TABLE user(
                      age INT(3)
 );
 #修改表结构：ALTER TABLE
-#(13)添加列
-#ALTER TABLE 表名 ADD 列名 类型[长度]
+    #(13)添加列
+    #ALTER TABLE 表名 ADD 列名 类型[长度]
 ALTER TABLE user ADD gender VARCHAR(10);
 #查看表的结构
 DESC user;
@@ -222,10 +222,10 @@ SHOW DATABASES ;
 # DDL语言,数据定义语言,操作数据库对象
 # CREARE,ALTER,DROP
 # 创建表:CREATE TABLE
-# 修改表: ALTER TABLE
-# 删除表: DROP TABLE
+    # 修改表: ALTER TABLE
+    # 删除表: DROP TABLE
 
-#DML语言:数据操作语言,是对表中的数据进行操作的语言,包含:增,删,改操作
+    #DML语言:数据操作语言,是对表中的数据进行操作的语言,包含:增,删,改操作
 CREATE TABLE person(
                        name VARCHAR(32),
                        age INT(3)
@@ -256,8 +256,8 @@ SHOW TABLES ;
 #(19).修改表数据操作:----UPDATE语句
 # UPDATE 表名 SET 字段名1=新值1[,字段2=新值2,...][WHERE 过滤条件]
 
-#通常修改语句要添加WHERE子句,用于添加过滤条件来定位要修改的记录,不添加WHERE子句则是全表所有记录都修改。
-#下面的操作会将person表中每条记录的age字段值都改为55！！！
+    #通常修改语句要添加WHERE子句,用于添加过滤条件来定位要修改的记录,不添加WHERE子句则是全表所有记录都修改。
+    #下面的操作会将person表中每条记录的age字段值都改为55！！！
 UPDATE person SET age=55;
 
 #将李四的年龄改为23岁
@@ -279,9 +279,9 @@ SELECT *FROM person;
 
 #(20).删除数据:DELETE语句
 # DELETE FROM 表明 [WHERE 过滤条件]
-# 注意！！！ 不添加WHERE条件则是全表删除！！！---系统会提示
+    # 注意！！！ 不添加WHERE条件则是全表删除！！！---系统会提示
 
-# 删除名字为张三的记录
+    # 删除名字为张三的记录
 DELETE FROM person WHERE name='张三';
 
 UPDATE person SET age=20 WHERE name='张三';
@@ -356,9 +356,9 @@ SELECT * FROM emp;
 #(21).引入数据类型
 CREATE TABLE userinfo(
                          id INT,#整型
-                         name VARCHAR(30),#变长字符
-                         birth DATETIME,#存年月日时分秒
-                         salary DOUBLE(7,2)#浮点型
+                            name VARCHAR(30),#变长字符
+                            birth DATETIME,#存年月日时分秒
+                            salary DOUBLE(7,2)#浮点型
 );
 
 #字段名可以忽略不写，此时为全列插入，即:VALUES需要指定每一列的值，且顺序，个数，类型必须与表中的字段一致
@@ -390,8 +390,8 @@ SELECT * FROM userinfo;
 
 CREATE TABLE student(
                         id INT AUTO_INCREMENT PRIMARY KEY,#primary(主要的) key主键
-                        name VARCHAR(30) NOT NULL,#NOT NULL非空约束
-                        age INT(3),
+        name VARCHAR(30) NOT NULL,#NOT NULL非空约束
+                            age INT(3),
                         gender CHAR(1) #长度为1,超出按第一个
 );
 # 查看student表结构
@@ -461,8 +461,8 @@ SELECT name,job,hiredate FROM emp;
 # 比较运算符：=,>,>=,<,<=,<>(不等于)----!=操作不是所有的数据库都支持
 # 查看工资大于1000的员工名字,职位,工资
 #  SELECT(选择)
-#  FROM(来自于)
-#  WHERE(哪里)
+               #  FROM(来自于)
+                          #  WHERE(哪里)
 SELECT name,job,sal
 FROM emp
 WHERE sal>1000;
@@ -498,7 +498,7 @@ WHERE job='人事' OR (sal>1000 AND job='销售');
 #查看人事部和销售部工资高于1000的员工的名字,工资,职位？
 SELECT name,sal,job
 FROM emp
-# AND优先级高于OR,因此可以通过()来提高OR的优先级
+         # AND优先级高于OR,因此可以通过()来提高OR的优先级
 WHERE (job='人事' OR job='销售') AND sal>1000;
 
 # (26).IN(列表) 值在列表中(等于列表中的其中之一)----★获取同一字段的子集时用IN
@@ -792,7 +792,7 @@ WHERE sal>2000;
 SELECT name,sal
 FROM emp
 ORDER BY sal ASC
-LIMIT 6,2;
+    LIMIT 6,2;
 
 # (36).聚合函数(也称为多行函数),用来将多条记录统计为一条记录---忽略NULL值
 # MIN():求最大值
@@ -885,20 +885,20 @@ SELECT AVG(sal) avg,dept_id #查看平均工资和部门
 FROM emp
 GROUP BY dept_id #按照部门分组
 ORDER BY AVG(sal) DESC #平均工资降序排列
-LIMIT 0,1; #取第一条
+    LIMIT 0,1; #取第一条
 #也可以为函数或表达式字段取别名，然后利用别名排序。
 SELECT AVG(sal) avg,dept_id #查看平均工资和部门
 FROM emp
 GROUP BY dept_id #按照部门分组
 ORDER BY avg  DESC
-LIMIT 0,1;
+    LIMIT 0,1;
 
 # 查看部门平均工资高于2000的那些部门的平均工资具体是多少?
 # ★聚合函数不能写在WHERE子句中
 # SELECT AVG(sal),dept_id
-# FROM emp
-# WHERE AVG(sal)>2000
-# GROUP BY dept_id;
+    # FROM emp
+               # WHERE AVG(sal)>2000
+        # GROUP BY dept_id;
 # 原因是过滤时机并不相同
 # WHERE子句是添加过滤条件，在查询表中每条记录时，用于筛选记录。(查询表的过程中用于过滤的)
 
@@ -999,14 +999,14 @@ SELECT sal
 FROM emp
 WHERE dept_id IN (2,3)
 ORDER BY sal DESC
-LIMIT 0,1;
+    LIMIT 0,1;
 SELECT name,sal
 FROM emp
 WHERE sal>(SELECT sal
            FROM emp
            WHERE dept_id IN (2,3)
            ORDER BY sal DESC
-           LIMIT 0,1);
+    LIMIT 0,1);
 #(第2种方法).用MAX获取一列的工资最大值
 SELECT MAX(sal)
 FROM emp
@@ -1094,12 +1094,12 @@ SELECT * FROM dept;
 # 的结果集，要尽量避免产生.
 # ★关联查询语法:
 # SELECT 字段
-# FROM 表A，表B[，表C，表D...]
+               # FROM 表A，表B[，表C，表D...]
 # WHERE 过滤条件
-# AND 连接条件
-# 注意:连接条件必须与过滤条件同时成立!!
+        # AND 连接条件
+        # 注意:连接条件必须与过滤条件同时成立!!
 
-#笛卡尔积的产生：产生了44条数据，将emp表每条记录都与dept表每条记录产生一条记录。
+        #笛卡尔积的产生：产生了44条数据，将emp表每条记录都与dept表每条记录产生一条记录。
 SELECT *
 FROM emp,dept;
 
@@ -1126,7 +1126,7 @@ WHERE e.dept_id=d.id;
 SELECT e.name,e.sal,e.dept_id,d.name,d.loc
 FROM emp e,dept d
 WHERE e.dept_id=d.id #连接条件
-  AND d.loc = '天庭'; #过滤条件
+AND d.loc = '天庭'; #过滤条件
 
 #3.查询表emp中工资最高的人住哪loc？
 #先查询工资最高是多少？
@@ -1156,15 +1156,15 @@ WHERE name LIKE '%飞%';
 SELECT d.loc
 FROM emp e,dept d
 WHERE e.dept_id=d.id #连接条件
-  AND e.name=(SELECT name
-              FROM emp
-              WHERE name LIKE '%飞%');
+AND e.name=(SELECT name
+            FROM emp
+            WHERE name LIKE '%飞%');
 
 #5.查看天庭的最高工资
 SELECT d.loc,MAX(e.sal)
 FROM emp e,dept d
 WHERE e.dept_id=d.id #连接条件
-  AND d.loc='天庭'
+AND d.loc='天庭'
 GROUP BY d.loc;
 
 #6.查看每个地区的平均工资(第四个地区没有人)
