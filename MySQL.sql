@@ -217,15 +217,15 @@ SHOW TABLES ;
 DROP DATABASE mydb4;
 #查看有多少个数据库(固定)
 SHOW DATABASES ;
-
 # ★总结：
-# DDL语言,数据定义语言,操作数据库对象
-# CREARE,ALTER,DROP
-# 创建表:CREATE TABLE
-    # 修改表: ALTER TABLE
+# DDL语言:数据定义语言,操作数据库对象
+# 关键字:CREATE,ALTER,DROP,ADD,CHANGE
+    # 创建表:CREATE TABLE
+    # 添加表中结构: ALTER TABLE 表名 ADD
+    # 删除表中结构: ALTER TABLE 表名 DROP
+    # 修改表: ALTER TABLE 表名 CHANGE
     # 删除表: DROP TABLE
 
-    #DML语言:数据操作语言,是对表中的数据进行操作的语言,包含:增,删,改操作
 CREATE TABLE person(
                        name VARCHAR(32),
                        age INT(3)
@@ -291,6 +291,12 @@ DELETE FROM person WHERE age>25;
 
 #清空表操作
 DELETE FROM person;
+# ★总结
+# DML语言:数据操作语言,是对表中的数据进行操作的语言,包含:增,删,改操作
+# 关键字:[INSERT语句 INTO VALUES] [UPDATE语句 SET WHERE] [DELETE语句 FROM]
+# 表中插入数据: INSERT INTO 表名(列名) VALUES(传参)
+# 修改表数据: UPDATE 表名 SET 字段值=？ [WHERE 过滤条件]--若不加条件可能引起范围修改
+# 删除表数据: DELETE FROM 表名 [WHERE 过滤条件]---若不加条件就会删除整张表及所有数据
 
 #[4].练习：
 #创建数据库day1db 字符集utf8并使用
@@ -447,7 +453,8 @@ SELECT * FROM teacher;
 SELECT * FROM student;
 
 
-# (24).DQL语句 数据查询语句
+# (24).
+# ★ DQL语句 数据查询语句
 # 基本语法：
 # SELECT 字段名1[,字段名2...或 * ] FROM 表名;
 
