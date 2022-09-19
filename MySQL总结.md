@@ -23,7 +23,11 @@
 ### 注：在MySQL中,我们可以为不同的项目创建不同的数据库,而每个数据库中都可以创建若干张表,每张表用来保存一组数据,比如我们为保存用户信息可以创建userinfo表,保存文章信息可以创建article表等
 
 ## (4). SQL语句分类：
-### DDL,DML,DQL,TCL,DCL
+### DDL(数据定义语言)
+### DML(数据操作语言)
+### DQL(数据查询语言)
+### TCL(事务控制语言)
+### DCL(数据控制语言)
 
 # 2. 表相关的操作
 ### DDL语句:数据定义语言,用来操作数据库对象的.
@@ -32,17 +36,17 @@
 # ★总结：
 ## DDL语言:数据定义语言,操作数据库对象
 ## 关键字:CREATE,ALTER,DROP,ADD,CHANGE
-### 1. 创建表:CREATE TABLE
-### 2. 添加表中结构: ALTER TABLE 表名 ADD
-### 3. 删除表中结构: ALTER TABLE 表名 DROP
-### 4. 修改表: ALTER TABLE 表名 CHANGE
-### 5. 删除表: DROP TABLE
+### 1. 创建表:CREATE TABLE 表名();
+### 2. 添加表中结构: ALTER TABLE 表名 ADD 要添加的列名 类型[长度] AFTER 字段名(在...之后);
+### 3. 删除表中结构: ALTER TABLE 表名 DROP 要删除的列名;
+### 4. 修改表: ALTER TABLE 表名 CHANGE 原字段名 新字段名 新类型;
+### 5. 删除表: DROP TABLE;
 # ★总结：
 ## 1. DML语言:数据操作语言,是对表中的数据进行操作的语言,包含:增,删,改操作
-### 关键字:[INSERT语句 INTO VALUES] [UPDATE语句 SET WHERE] [DELETE语句 FROM]
+### 关键字:[INSERT语句 INTO VALUES] [DELETE语句 FROM] [UPDATE语句 SET WHERE] 
 ### (1). 表中插入数据: INSERT INTO 表名(列名) VALUES(传参)
-### (2). 修改表数据: UPDATE 表名 SET 字段值=？ [WHERE 过滤条件]---若不加条件可能引起范围修改
-### (3). 删除表数据: DELETE FROM 表名 [WHERE 过滤条件]---若不加条件就会删除整张表及所有数据
+### (2). 删除表数据: DELETE FROM 表名 [WHERE 过滤条件]---若不加条件就会删除整张表及所有数据
+### (3). 修改表数据: UPDATE 表名 SET 字段值=？ [WHERE 过滤条件]---若不加条件可能引起范围修改
 
 ## 2. 数据类型
 ### (1). 整数:INT(m)和BIGINT(m).m表示的是长度 例如:m=5 存数字18 实际存储:00018
@@ -61,7 +65,7 @@
 ### (3). DATETIME:保存年月日十分秒
 ### (4). TIMESTAMP:时间戳，记录UTC时间，从1970-01-01 00:00:00到表示的时间之间经过的毫秒
 ## 5. 约束
-### _约束是为表中某个字段添加特定的限制条件，只有符合条件的记录才可以保存_ 
+### (约束是为表中某个字段添加特定的限制条件，只有符合条件的记录才可以保存)
 ### 1. 非空约束:该字段的值不允许为空
 ### 2. 外键约束:实际开发中几乎不使用外键约束
 
@@ -73,7 +77,7 @@
 ### 比较运算符：=,>,>=,<,<=,<>(不等于)----!=操作不是所有的数据库都支持
 ###  SELECT(选择) FROM(来自于) WHERE(哪里)
 ## 3. AND,OR来连接多个条件---★AND优先级高于OR,可以通过括号()来提高OR的优先级
-### AND:都为真时才为真-------------  相当于java中&&(与)
+### AND:都为真时才为真-------------相当于java中&&(与)  但这里不存在短路现象
 ### OR:都为假时才为假-------------相当于java中||(或)
 ### 例：查看2号部门工资高于1000的员工的名字,工资,职位,部门编号？---两个条件AND
     SELECT name,sal,job,dept_id
@@ -81,17 +85,18 @@
     WHERE dept_id=2 AND sal>1000;
 ## 4.IN(列表) 值在列表中(等于列表中的其中之一)----★获取同一字段的子集时用IN
 ##   NOT IN(不在列表) 值不在列表中
-### 例： 查看职位是人事和销售的所有员工的名字,工资,职位,部门编号？
+### 例：查看职位是人事和销售的所有员工的名字,工资,职位,部门编号？
     SELECT name,sal,job,dept_id
     FROM emp
     WHERE job IN('人事','销售');
 ## 5. (1).DISTINCT用于去除指定列重复值的行----distinct(不同的)
 ### 例：查看公司有多少种职位？---单列去重
-    SELECT DISTINCT job FROM emp;
-
+    SELECT DISTINCT job 
+    FROM emp;
 ##    (2).多列去重时,就是去除指定这些列的值的组合有重复的行
 ### 例：去除职位与部门编号重复的行
-    SELECT DISTINCT job,dept_id FROM emp;
+    SELECT DISTINCT job,dept_id 
+    FROM emp;
 ## 6. 模糊查询:LIKE
 ### LIKE中两个通配符:_和%
 ### (1). _(下划线):表示任意的一个字符
@@ -108,7 +113,7 @@
 ### 5. %X_：倒数第二个字符是X
 ### 6. X%Y：字符串以X开头以Y结尾
 ### 7. X_Y：字符串只有三个字,第一个是X,第三个是Y
-## 7. 排序-----ORDER(order顺序)----ASC升序,DESC降序
+## 7. 排序-----ORDER(order顺序)----ASC升序(默认),DESC降序
 ### ORDER BY子句,根据指定的字段排序查询结果集,该子句只能放在查询语句的最后一个子句上
 ### 例：查看公司所有员工的姓名和工资,且按工资从低到高排序
     SELECT name,sal
@@ -127,13 +132,15 @@
     FROM emp;
 ## 10.查询时也可以用函数的结果作为字段
 ### 例： 孙悟空的职位是销售  name+"的职位是"+job(java中)
-    SELECT CONCAT(name,'的职位是',job) FROM emp;
+    SELECT CONCAT(name,'的职位是',job) 
+    FROM emp;
+    #孙悟空的职位是销售...
 ## 11.数字与NULL进行运算,结果为NULL
     例：
     SELECT name,sal,comm,sal+comm
     FROM emp;
 ## 12.NVL函数 用来替换NULL值
-### _NVL(arg1,arg2) 当arg1不为null时则函数返回arg1的值,如果arg1为null则返回arg2的值_
+### NVL(arg1,arg2) 当arg1不为null时则函数返回arg1的值,如果arg1为null则返回arg2的值：
     SELECT name,sal,NVL(comm,0) FROM emp;#第一个参数为NULL返回第二个参数值
 ## 13.别名
 ### 我们可以为字段定义别名,也可以给表定义别名。
@@ -145,13 +152,13 @@
     SELECT name,sal*12 salary FROM emp;
 ### ★支持的语法
 ### 字段名 别名
-##### SELECT name,sal*12 salary FROM emp;
+    SELECT name,sal*12 salary FROM emp;
 ### 字段名 as 别名
-##### SELECT name as ename,sal*12 salary FROM emp;
+    SELECT name as ename,sal*12 salary FROM emp;
 ### 字段名 as '别名'
-##### SELECT name as 'ename',sal*12 'salary' FROM emp;
+    SELECT name as 'ename',sal*12 'salary' FROM emp;
 ### 字段名 as "别名"
-##### SELECT name as "ename",sal*12 "salary" FROM emp;
+    SELECT name as "ename",sal*12 "salary" FROM emp;
 ### 查询表emp中的所有数据
 ##### SELECT * FROM emp;
 ## 14.聚合函数(也称为多行函数):用来将多条记录统计为一条记录---忽略NULL值
