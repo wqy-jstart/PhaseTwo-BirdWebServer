@@ -81,9 +81,9 @@ DROP DATABASE mydb2;
 
 #(7).创建表(表中所有字段的默认值为null)
 # CREATE TABLE 表名(-------★不给长度默认11位
-                                     #     列名1 类型[(长度)] [DEFAULT 默认值] [约束条件],
-                                     #     列名2 类型...
-                                         # )[CHARSET=utf8/gbk]
+#     列名1 类型[(长度)] [DEFAULT 默认值] [约束条件],
+#     列名2 类型...
+# )[CHARSET=utf8/gbk]
 
 # 创建userinfo表
 CREATE TABLE userinfo(
@@ -147,8 +147,8 @@ CREATE TABLE user(
                      age INT(3)
 );
 #修改表结构：ALTER TABLE
-    #(13)添加列
-    #ALTER TABLE 表名 ADD 列名 类型[长度]
+#(13)添加列
+#ALTER TABLE 表名 ADD 列名 类型[长度]
 ALTER TABLE user ADD gender VARCHAR(10);
 #查看表的结构
 DESC user;
@@ -162,7 +162,7 @@ ALTER TABLE hero ADD id VARCHAR(10) FIRST ;#加入FIRST后为第一列
 #查询hero表的结构
 DESC hero;
 
-#(14).在表中插入一个字段
+#(14).在表中添加一个字段
 # ALTER TABLE 表名 ADD 要添加的列名 类型[长度] AFTER 字段名(在其之后);
 ALTER TABLE hero ADD gender VARCHAR(32) AFTER username;
 
@@ -173,7 +173,7 @@ ALTER TABLE hero DROP gender;
 DESC hero;
 
 #(16).修改表中现有的列(表名,字段名,类型,长度)----CHANGE(改变)
-# ALTER TABLE 表名 CHARSET 原字段名 新字段名 新类型;
+# ALTER TABLE 表名 CHANGE 原字段名 新字段名 新类型;
 #将age的类型从INT改成VARCHAR
 ALTER TABLE hero CHANGE age age VARCHAR(10);
 DESC hero;
@@ -217,15 +217,15 @@ SHOW TABLES ;
 DROP DATABASE mydb4;
 #查看有多少个数据库(固定)
 SHOW DATABASES ;
-# ★总结：
-# DDL语言:数据定义语言,操作数据库对象
-# 关键字:CREATE,ALTER,DROP,ADD,CHANGE
-    # 创建表:CREATE TABLE
-    # 添加表中结构: ALTER TABLE 表名 ADD
-    # 删除表中结构: ALTER TABLE 表名 DROP
-    # 修改表: ALTER TABLE 表名 CHANGE
-    # 删除表: DROP TABLE
 
+# ★总结：
+# DDL语言,数据定义语言,操作数据库对象
+# CREARE,ALTER,DROP
+# 创建表:CREATE TABLE
+# 修改表: ALTER TABLE
+# 删除表: DROP TABLE
+
+#DML语言:数据操作语言,是对表中的数据进行操作的语言,包含:增,删,改操作
 CREATE TABLE person(
                        name VARCHAR(32),
                        age INT(3)
@@ -256,8 +256,8 @@ SHOW TABLES ;
 #(19).修改表数据操作:----UPDATE语句
 # UPDATE 表名 SET 字段名1=新值1[,字段2=新值2,...][WHERE 过滤条件]
 
-    #通常修改语句要添加WHERE子句,用于添加过滤条件来定位要修改的记录,不添加WHERE子句则是全表所有记录都修改。
-    #下面的操作会将person表中每条记录的age字段值都改为55！！！
+#通常修改语句要添加WHERE子句,用于添加过滤条件来定位要修改的记录,不添加WHERE子句则是全表所有记录都修改。
+#下面的操作会将person表中每条记录的age字段值都改为55！！！
 UPDATE person SET age=55;
 
 #将李四的年龄改为23岁
@@ -279,9 +279,9 @@ SELECT *FROM person;
 
 #(20).删除数据:DELETE语句
 # DELETE FROM 表明 [WHERE 过滤条件]
-    # 注意！！！ 不添加WHERE条件则是全表删除！！！---系统会提示
+# 注意！！！ 不添加WHERE条件则是全表删除！！！---系统会提示
 
-    # 删除名字为张三的记录
+# 删除名字为张三的记录
 DELETE FROM person WHERE name='张三';
 
 UPDATE person SET age=20 WHERE name='张三';
@@ -291,12 +291,6 @@ DELETE FROM person WHERE age>25;
 
 #清空表操作
 DELETE FROM person;
-# ★总结
-# DML语言:数据操作语言,是对表中的数据进行操作的语言,包含:增,删,改操作
-# 关键字:[INSERT语句 INTO VALUES] [UPDATE语句 SET WHERE] [DELETE语句 FROM]
-# 表中插入数据: INSERT INTO 表名(列名) VALUES(传参)
-# 修改表数据: UPDATE 表名 SET 字段值=？ [WHERE 过滤条件]--若不加条件可能引起范围修改
-# 删除表数据: DELETE FROM 表名 [WHERE 过滤条件]---若不加条件就会删除整张表及所有数据
 
 #[4].练习：
 #创建数据库day1db 字符集utf8并使用
@@ -362,9 +356,9 @@ SELECT * FROM emp;
 #(21).引入数据类型
 CREATE TABLE userinfo(
                          id INT,#整型
-                            name VARCHAR(30),#变长字符
-                            birth DATETIME,#存年月日时分秒
-                            salary DOUBLE(7,2)#浮点型
+                         name VARCHAR(30),#变长字符
+                         birth DATETIME,#存年月日时分秒
+                         salary DOUBLE(7,2)#浮点型
 );
 
 #字段名可以忽略不写，此时为全列插入，即:VALUES需要指定每一列的值，且顺序，个数，类型必须与表中的字段一致
@@ -396,8 +390,8 @@ SELECT * FROM userinfo;
 
 CREATE TABLE student(
                         id INT AUTO_INCREMENT PRIMARY KEY,#primary(主要的) key主键
-        name VARCHAR(30) NOT NULL,#NOT NULL非空约束
-                            age INT(3),
+                        name VARCHAR(30) NOT NULL,#NOT NULL非空约束
+                        age INT(3),
                         gender CHAR(1) #长度为1,超出按第一个
 );
 # 查看student表结构
@@ -453,8 +447,7 @@ SELECT * FROM teacher;
 SELECT * FROM student;
 
 
-# (24).
-# ★ DQL语句 数据查询语句
+# (24).DQL语句 数据查询语句
 # 基本语法：
 # SELECT 字段名1[,字段名2...或 * ] FROM 表名;
 
@@ -468,8 +461,8 @@ SELECT name,job,hiredate FROM emp;
 # 比较运算符：=,>,>=,<,<=,<>(不等于)----!=操作不是所有的数据库都支持
 # 查看工资大于1000的员工名字,职位,工资
 #  SELECT(选择)
-               #  FROM(来自于)
-                          #  WHERE(哪里)
+#  FROM(来自于)
+#  WHERE(哪里)
 SELECT name,job,sal
 FROM emp
 WHERE sal>1000;
@@ -505,7 +498,7 @@ WHERE job='人事' OR (sal>1000 AND job='销售');
 #查看人事部和销售部工资高于1000的员工的名字,工资,职位？
 SELECT name,sal,job
 FROM emp
-         # AND优先级高于OR,因此可以通过()来提高OR的优先级
+# AND优先级高于OR,因此可以通过()来提高OR的优先级
 WHERE (job='人事' OR job='销售') AND sal>1000;
 
 # (26).IN(列表) 值在列表中(等于列表中的其中之一)----★获取同一字段的子集时用IN
@@ -744,15 +737,15 @@ SELECT name,sal,comm,sal+comm
 FROM emp;
 
 # (34).NVL函数 用来替换NULL值
-# NVL(arg1,arg2) 当arg1不为null时则函数返回arg1的值,如果arg1为null则返回arg2的值
+# NVL(ar1,arg2) 当arg1不为null时则函数返回arg1的值,如果arg1为null则返回arg2的值
 SELECT name,sal,NVL(comm,0) FROM emp;#第一个参数为NULL返回第二个参数值
 
 # (35).别名
 #我们可以为字段定义别名,也可以给表定义别名。
 # 为字段定义别名一般多用于:
-# 1:隐藏实际表字段名
+# 1:隐藏实际表字段名名
 # 2:为计算表达式或函数的结果只作为字段时定义可读性更好的字段名
-# SELECT 字段1 别名1,字段2 别名2 FROM 表名;
+# 1.SELECT 字段1 别名1,字段2 别名2 FROM 表名;
 SELECT name ename,sal salary FROM emp;
 SELECT name,sal*12 salary FROM emp;
 
@@ -799,11 +792,12 @@ WHERE sal>2000;
 SELECT name,sal
 FROM emp
 ORDER BY sal ASC
-    LIMIT 6,2;
+LIMIT 6,2;
 
 # (36).聚合函数(也称为多行函数),用来将多条记录统计为一条记录---忽略NULL值
 # MIN():求最大值
 # MAX():求最小值
+# COUNT():统计记录数
 # AVG():求平均值
 # SUM():求和
 # COUNT():统计某一字段的数量
@@ -815,8 +809,7 @@ SELECT COUNT(*) 员工数量
 FROM emp;
 
 #查看公司最低收入的员工工资是多少？
-#在此不能加name,dept_id等字段,因为这些字段的值不唯一,默认所属条件第一个
-SELECT MIN(sal) FROM emp;
+SELECT name,MIN(sal) FROM emp;
 
 #查看工资的最低,最高,平均,求和 并各自加上别名
 SELECT MIN(sal) 最低工资,MAX(sal) 最高工资,AVG(sal) 平均工资,SUM(sal) 工资总和 FROM emp;
@@ -854,7 +847,7 @@ SELECT dept_id,sal
 FROM emp
 ORDER BY dept_id;
 
-#SELECT字句中不在聚合函数中的其他字段必须出现在GROUP BY字句中！
+#SELECT字句中不聚合函数中的其他字段必须出现在GROUP BY字句中
 SELECT dept_id,AVG(sal)
 FROM emp
 GROUP BY dept_id;
@@ -892,29 +885,20 @@ SELECT AVG(sal) avg,dept_id #查看平均工资和部门
 FROM emp
 GROUP BY dept_id #按照部门分组
 ORDER BY AVG(sal) DESC #平均工资降序排列
-    LIMIT 0,1; #取第一条
+LIMIT 0,1; #取第一条
 #也可以为函数或表达式字段取别名，然后利用别名排序。
 SELECT AVG(sal) avg,dept_id #查看平均工资和部门
 FROM emp
 GROUP BY dept_id #按照部门分组
 ORDER BY avg  DESC
-    LIMIT 0,1;
-#分步写法：先查询按部门分组的平均工资最高值,再嵌套对应某一个部门
-SELECT dept_id,AVG(sal)
-FROM emp
-GROUP BY dept_id
-HAVING AVG(sal)=(SELECT AVG(sal) avg
-                 FROM emp
-                 GROUP BY dept_id
-                 ORDER BY avg DESC
-                 LIMIT 0,1);
+LIMIT 0,1;
 
 # 查看部门平均工资高于2000的那些部门的平均工资具体是多少?
 # ★聚合函数不能写在WHERE子句中
 # SELECT AVG(sal),dept_id
-    # FROM emp
-    # WHERE AVG(sal)>2000
-    # GROUP BY dept_id;
+# FROM emp
+# WHERE AVG(sal)>2000
+# GROUP BY dept_id;
 # 原因是过滤时机并不相同
 # WHERE子句是添加过滤条件，在查询表中每条记录时，用于筛选记录。(查询表的过程中用于过滤的)
 
@@ -944,7 +928,7 @@ HAVING 工资总和>5400;#WHERE先发挥作用,HAVING后发挥作用
 
 # (39).子查询
 # 嵌套在其他SQL语句中的查询语句被称为叫做"子查询"
-# 子查询通常用于要基于一个★"查询结果"再进行操作的地方
+# 子查询通常用于要基于一个查询结果再进行操作的地方
 
 #1. 查看比公司平均工资高的那些员工的名字和工资是多少？
 #先求公司的平均工资
@@ -1001,7 +985,7 @@ SELECT dept_id
 FROM emp
 WHERE sal=(SELECT MIN(sal)
            FROM emp);
-#再将查询的部门嵌套进下面查询信息的WHERE条件中
+#再讲查询的部门嵌套进下面查询信息的WHERE条件中
 SELECT *
 FROM emp
 WHERE dept_id = (SELECT dept_id
@@ -1015,14 +999,14 @@ SELECT sal
 FROM emp
 WHERE dept_id IN (2,3)
 ORDER BY sal DESC
-    LIMIT 0,1;
+LIMIT 0,1;
 SELECT name,sal
 FROM emp
 WHERE sal>(SELECT sal
            FROM emp
            WHERE dept_id IN (2,3)
            ORDER BY sal DESC
-    LIMIT 0,1);
+           LIMIT 0,1);
 #(第2种方法).用MAX获取一列的工资最大值
 SELECT MAX(sal)
 FROM emp
@@ -1060,7 +1044,7 @@ WHERE sal>ANY(SELECT sal
 # >ANY(子查询)：大于子查询结果集中最小的
 # <ANY(子查询)：小于子查询结果集中最大的
 #
-# 多行多列子查询(结果集是一个表),通常就当做一张表使用,可以跟在FROM字句中----AS关键字
+# 多行多列子查询(结果集是一个表),通常就当做一张表使用,可以跟在FROM字句中
 # 或者跟在DDL语句中基于一个查询结果集创建表.
 
 # (40).将1号部门员工信息单独定义一张表名为emp_dept1;
@@ -1110,12 +1094,12 @@ SELECT * FROM dept;
 # 的结果集，要尽量避免产生.
 # ★关联查询语法:
 # SELECT 字段
-               # FROM 表A，表B[，表C，表D...]
+# FROM 表A，表B[，表C，表D...]
 # WHERE 过滤条件
-        # AND 连接条件
-        # 注意:连接条件必须与过滤条件同时成立!!
+# AND 连接条件
+# 注意:连接条件必须与过滤条件同时成立!!
 
-        #笛卡尔积的产生：产生了44条数据，将emp表每条记录都与dept表每条记录产生一条记录。
+#笛卡尔积的产生：产生了44条数据，将emp表每条记录都与dept表每条记录产生一条记录。
 SELECT *
 FROM emp,dept;
 
@@ -1123,7 +1107,7 @@ FROM emp,dept;
 SELECT emp.name,emp.sal,emp.dept_id,dept.name,dept.loc
 FROM emp,dept;
 
-# 还可以为表取别名,用"别名.字段名"也可以标明查询的是那张表上的字段
+# 还可以为表取别名,用"别名,字段名"也可以标明查询的是那张表上的字段
 SELECT e.name,e.sal,e.dept_id,d.name,d.loc
 FROM emp e,dept d;
 
@@ -1135,14 +1119,14 @@ FROM emp e,dept d
 WHERE e.dept_id=d.id;
 #     注:emp表上的dept_id保存的值是dept表中主键字段的值，因此emp表中dept_id与dept表id值
 # 一样的记录才会被查询出来作为一条记录显示在结果集中。
-# ★当一张表上的某个字段保存的是另一张表中的主键字段值时，这个字段就被称为"外键"
+# 当一张表上的某个字段保存的是另一张表中的主键字段值时，这个字段就被称为"外键"
 # 关联关系中经常用A.主键=B.外键作为连接条件。
 
 #2.查看在天庭工作的人都有谁？
 SELECT e.name,e.sal,e.dept_id,d.name,d.loc
 FROM emp e,dept d
-WHERE e.dept_id=d.id #过滤条件
-AND d.loc = '天庭'; #连接条件
+WHERE e.dept_id=d.id #连接条件
+  AND d.loc = '天庭'; #过滤条件
 
 #3.查询表emp中工资最高的人住哪loc？
 #先查询工资最高是多少？
@@ -1171,16 +1155,16 @@ WHERE name LIKE '%飞%';
 #再连接第二张表查位置过滤条件为第一张表的名字含"飞"
 SELECT d.loc
 FROM emp e,dept d
-WHERE e.dept_id=d.id #过滤条件
-AND e.name=(SELECT name #连接条件
-            FROM emp
-            WHERE name LIKE '%飞%');
+WHERE e.dept_id=d.id #连接条件
+  AND e.name=(SELECT name
+              FROM emp
+              WHERE name LIKE '%飞%');
 
 #5.查看天庭的最高工资
 SELECT d.loc,MAX(e.sal)
 FROM emp e,dept d
-WHERE e.dept_id=d.id #过滤条件
-AND d.loc='天庭'#连接条件
+WHERE e.dept_id=d.id #连接条件
+  AND d.loc='天庭'
 GROUP BY d.loc;
 
 #6.查看每个地区的平均工资(第四个地区没有人)
@@ -1192,3 +1176,220 @@ GROUP BY d.loc;
 #查询两张表的所有数据
 SELECT * FROM dept;
 SELECT * FROM emp;
+
+#=============================================================================
+
+# (43).内连接JOIN子句
+#内连接与关联查询效果一致,区别是单独书写关联关系(关联条件与过滤条件分开)
+#JOIN..ON..子句可以写多个,当连接多张表时使用
+# SELECT 字段
+# FROM A表 a
+# JOIN B表 b
+# ON a.xx=b.xx(连接条件)
+# JOIN C表 c
+# ON c.xxx=b.xxx或c.xxx=a.xxx
+# JOIN .... ON ...(以此类推)
+
+#查看每个员工信息以及其对应的部门信息
+SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+FROM emp e
+         JOIN dept d
+              ON e.dept_id = d.id;
+# JOIN XX x(表名 别名)
+# ON d.xx = x.xx(连接条件)...
+
+# 在内连接中,过滤条件还是写在WHERE子句中
+# 查看工资高于1300的员工信息和所在的部门信息
+# SELECT 字段
+# FROM 表1
+# JOIN 表2
+# ON 连接条件
+# WHERE 过滤条件
+SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+FROM emp e
+         JOIN dept d
+              ON e.dept_id = d.id #连接条件
+WHERE e.sal>1300; #过滤条件
+
+SELECT * FROM emp;
+SELECT * FROM dept;
+INSERT INTO emp(name,dept_id) VALUES ('灭霸',5);
+
+#查看每个员工和部门的信息------在关联查询中不满足连接条件的记录会被排除在外的
+#关联查询方式------"灭霸"是五号部门在dept表中没有对应故不满足连接条件
+SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+FROM emp e,dept d
+WHERE e.dept_id=d.id;
+
+#内连接查询方式
+SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+FROM emp e
+         JOIN dept d
+              ON e.dept_id = d.id;
+
+# (44).如果需要在结果集中列出不满足连接条件的记录时我们需要使用外连接
+#外连接有:
+# 左外连接:以LEFT JOIN左侧表作为主表,其中的记录都要展示,不满足连接条件时,来自右侧表中记录的字段值全部为NULL
+# 右外连接:以RIGHT JOIN右侧表作为主表,其中的记录都要展示,不满足连接条件时,来自左侧表中记录的字段值全部为NULL
+#左外连接演示
+SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+FROM emp e
+         LEFT JOIN dept d
+                   ON e.dept_id = d.id;
+#右外连接演示
+SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+FROM emp e
+         RIGHT JOIN dept d
+                    ON e.dept_id = d.id;
+
+# (45).★使用UNION关键字将左右连接并在一起(取并集)
+#全连接效果,结果集包含满足连接条件的和左连接,右连接的左右数据
+SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+FROM emp e
+         LEFT JOIN dept d
+                   ON e.dept_id = d.id
+UNION #可以将两条并在一起(并集)
+SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+FROM emp e
+         RIGHT JOIN dept d
+                    ON e.dept_id = d.id;
+
+#1.查看比本部门平均工资高的员工信息？
+#第一种方法：可以利用emp_dept_sal表的平均值信息
+SELECT * FROM emp_dept_sal;#查看emp_dept_sal的所有数据
+SELECT e.name,e.sal,a.avg_sal,a.dept_id
+FROM emp e,emp_dept_sal a
+WHERE e.dept_id=a.dept_id #连接条件
+  AND e.sal>a.avg_sal #过滤条件
+ORDER BY dept_id;#按照部门升序,结果清晰
+
+#第二种方法：分步：
+# 第一步.先查看本部门的平均工资-----把该查询结果看成一个表
+SELECT dept_id,AVG(sal) avg_sal
+FROM emp
+WHERE dept_id
+GROUP BY dept_id;
+# 第二步.再将查询的本部门平均工资作为条件可以利用两种方式(关联查询,内连接查询)来完成需求
+# (1).关联查询
+SELECT e.name,e.sal,a.avg_sal,e.dept_id
+FROM emp e,(SELECT dept_id,AVG(sal) avg_sal
+            FROM emp
+            WHERE dept_id
+            GROUP BY dept_id) a
+WHERE e.dept_id=a.dept_id
+  AND e.sal>a.avg_sal
+ORDER BY dept_id;#按照部门升序,结果清晰
+# (2).内连接查询
+SELECT e.name,e.sal,a.avg_sal,e.dept_id
+FROM emp e
+         JOIN (SELECT dept_id,AVG(sal) avg_sal
+               FROM emp
+               WHERE dept_id
+               GROUP BY dept_id) a
+              ON e.dept_id = a.dept_id
+WHERE e.sal>a.avg_sal
+ORDER BY dept_id;#按照部门升序,结果清晰
+
+#2.查看比所在地区平均工资高的员工？
+# 第一步.查看每个员工的工资及其所在的地区
+SELECT e.sal,d.loc
+FROM emp e,dept d
+WHERE e.dept_id=d.id;
+# 第二步.先查询每个地区对应的平均工资(按照loc字段分组)----把该查询结果看成一张表
+SELECT d.loc,AVG(e.sal) avg_sal
+FROM emp e,dept d
+WHERE e.dept_id=d.id
+GROUP BY d.loc;
+# 第三步.关联三张表查询:员工表-部门表-(第2步子查询的结果集当成的表)
+#查询emp表数据
+SELECT * FROM emp;
+#(1).关联查询
+SELECT e.name,a.loc,e.sal,a.avg_sal,e.dept_id
+FROM emp e,dept d,(SELECT d.loc,AVG(e.sal) avg_sal
+                   FROM emp e,dept d
+                   WHERE e.dept_id=d.id
+                   GROUP BY d.loc ) a
+WHERE e.dept_id=d.id
+  AND d.loc = a.loc
+  AND e.sal>a.avg_sal
+ORDER BY dept_id;
+#(2).内连接
+SELECT e.name,a.loc,sal,a.avg_sal,e.dept_id
+FROM emp e
+         JOIN dept d
+              ON e.dept_id=d.id
+         JOIN (SELECT d.loc,AVG(sal) avg_sal
+               FROM emp e,dept d
+               WHERE e.dept_id=d.id
+               GROUP BY d.loc) a
+              ON d.loc = a.loc
+WHERE e.sal>a.avg_sal
+ORDER BY dept_id;
+
+#3.查看每个地区的最高工资是谁？
+#第一步.先查询地区对应的最高工资(按照地区分组)
+SELECT d.loc,MAX(e.sal)
+FROM emp e,dept d
+WHERE e.dept_id=d.id
+GROUP BY d.loc;
+#第二步.关联三张表查询:员工表-部门表-(第1步子查询的结果集当成的表)
+#(1).关联查询
+SELECT e.name,a.loc,e.sal
+FROM emp e,dept d,(SELECT d.loc,MAX(e.sal) max #子查询表
+                   FROM emp e,dept d
+                   WHERE e.dept_id=d.id
+                   GROUP BY d.loc) a
+WHERE e.dept_id=d.id
+  AND d.loc=a.loc
+  AND e.sal=max;
+#(2).内连接查询
+SELECT e.name,a.loc,e.sal
+FROM emp e #员工表
+         JOIN dept d #部门表
+              ON e.dept_id = d.id #员工表与部门表的连接关系
+         JOIN (SELECT d.loc,MAX(e.sal) max #子查询表
+               FROM emp e,dept d
+               WHERE e.dept_id=d.id
+               GROUP BY d.loc) a
+              ON d.loc=a.loc #子查询表与另外两张表其中之一的连接关系
+WHERE e.sal=max;
+
+#自连接
+#该表中的一条记录可以对应该表中的其他多条记录时,就是自连接的关联关系
+#自连接的设计是为了保存同样一组属性的数据之间存在上下级关系时(树状结构数据)
+#公司的员工组织结构,对于公司而言大家都属于员工,但是员工之间又存在上下级关系。
+#电商中常见的分类树
+
+#自连接：当前表的一个字段
+#查看每个员工和他的领导是谁？
+SELECT e.name,m.name
+FROM emp e,emp m
+WHERE e.manager=m.id;
+#内连接
+SELECT e.name,m.name
+FROM emp e
+         JOIN emp m
+              ON e.manager=m.id;
+
+#刘备的手下都有谁
+SELECT e.name,m.name
+FROM emp e
+         JOIN emp m
+              ON e.manager=m.id
+WHERE m.name='刘备';
+
+#谁的工资高于孙悟空的领导工资
+# 1：孙悟空领导的工资
+SELECT m.name,m.sal
+FROM emp e
+         JOIN emp m
+              ON e.manager=m.id
+WHERE e.name='孙悟空';
+#看看谁的工资大于唐僧的
+SELECT name,sal
+FROM emp
+WHERE sal>(SELECT m.sal
+           FROM emp e
+                    JOIN emp m
+                         ON e.manager=m.id
+           WHERE e.name='孙悟空');

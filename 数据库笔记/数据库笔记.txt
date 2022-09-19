@@ -1044,9 +1044,110 @@ GROUP BY d.loc
 62. 查询每个部门的平均工资, 只查询工资在1000到3000之间的,并且过滤掉平均工资低于2000的
 
 
+# 内连接JOIN子句
+# 内连接与关联查询效果一致，区别是单独书写关联关系(关联条件与过滤条件分开)
+# JOIN..ON..子句可以写多个，当连接多张表时使用。
+#
+
+# SELECT 字段
+# FROM A表 a
+# JOIN B表 b
+# ON a.xx=b.xx(连接条件)
+# JOIN C表 c
+# ON c.xxx=b.xxx或c.xxx=a.xxx
+# JOIN .... ON ...
+
+# 查看每个员工信息以及其对应的部分信息
+SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+FROM emp e
+JOIN dept d
+ON e.dept_id = d.id;
+
+在内连接中，过滤条件还是写在WHERE子句中
+查看工资高于1300的员工信息和所在的部门信息
+# SELECT 字段
+# FROM 表1
+# JOIN 表2
+# ON 连接条件
+# WHERE 过滤条件
+SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+FROM emp e
+JOIN dept d
+ON e.dept_id = d.id
+WHERE e.sal>1300
+
+# 在关联查询中不满足连接条件的记录会被排除在外的
+# 查看每个员工和部门信息
+SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+FROM emp e,dept d
+WHERE e.dept_id=d.id
+
+SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+FROM emp e
+JOIN dept d
+ON e.dept_id = d.id
 
 
+如果需要在结果集中列出不满足连接条件的记录时我们需要使用外连接
+外连接有:
+左外连接:以LEFT JOIN左侧表作为主表，其中的记录都要展示，不满足连接条件时来自右侧表中记录
+        的字段值全部为NULL
+右外连接:以RIGHT JOIN右侧表作为主表，其中的记录都要展示，不满足连接条件时来自左侧表中记录
+        的字段值全部为NULL
 
+SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+FROM emp e
+LEFT JOIN dept d
+ON e.dept_id = d.id
+
+SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+FROM emp e
+RIGHT JOIN dept d
+ON e.dept_id = d.id
+
+全连接效果，结果集包含满足连接条件的和左连接，右连接的所有数据
+SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+FROM emp e
+LEFT JOIN dept d
+ON e.dept_id = d.id
+UNION
+SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+FROM emp e
+RIGHT JOIN dept d
+ON e.dept_id = d.id
+
+查看比本部门平均工资高的员工信息?
+1查看每个部门的平均工资
+(SELECT AVG(sal) avg_sal,dept_id FROM emp GROUP BY dept_id)
+
+2将子查询结果集当作表进行关联查询
+SELECT e.name,e.sal,e.dept_id,a.avg_sal
+FROM emp e,(SELECT AVG(sal) avg_sal,dept_id FROM emp GROUP BY dept_id) a
+WHERE e.dept_id=a.dept_id
+AND e.sal>a.avg_sal
+
+
+查看比所在地区平均工资高的员工?
+1:查看每个员工的工资及其所在的地区
+SELECT e.sal,d.loc
+FROM emp e,dept d
+WHERE e.dept_id=d.id
+
+2:每个地区的平均工资(按照loc字段分组)
+SELECT AVG(e.sal) avg_sal,d.loc
+FROM emp e,dept d
+WHERE e.dept_id=d.id
+GROUP BY d.loc
+
+3:关联三张表查询:员工表-部门表-(第2步子查询的结果集当成的表)
+SELECT e.name,e.sal,a.avg_sal,d.loc
+FROM emp e,dept d,(SELECT AVG(e.sal) avg_sal,d.loc
+                   FROM emp e,dept d
+                   WHERE e.dept_id=d.id
+                   GROUP BY d.loc) a
+WHERE e.dept_id = d.id
+AND d.loc = a.loc
+AND e.sal>a.avg_sal
 
 
 
