@@ -339,3 +339,79 @@
     JOIN dept d
     ON e.dept_id = d.id #连接条件
     WHERE e.sal>1300; #过滤条件
+### (4).在关联查询中不满足连接条件的记录会被排除在外的
+### 例：查看每个员工和部门的信息
+#### a.关联查询方式------"灭霸"是五号部门在dept表中没有对应故不满足连接条件
+    SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+    FROM emp e,dept d
+    WHERE e.dept_id=d.id;
+####b.内连接查询方式
+    SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+    FROM emp e
+    JOIN dept d
+    ON e.dept_id = d.id;
+## 20.外连接：如果需要在结果集中列出不满足连接条件的记录时我们需要使用外连接
+###外连接有:
+#### (1).左外连接:以LEFT JOIN左侧表作为主表,其中的记录都要展示,不满足连接条件时,来自右侧表中记录的字段值全部为NULL
+#### (2).右外连接:以RIGHT JOIN右侧表作为主表,其中的记录都要展示,不满足连接条件时,来自左侧表中记录的字段值全部为NULL
+### a.左外连接演示(LEFT JOIN)
+    SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+    FROM emp e
+    LEFT JOIN dept d
+    ON e.dept_id = d.id;
+![img_1.png](img_1.png)
+### b.右外连接演示(RIGHT JOIN)
+    SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+    FROM emp e
+    RIGHT JOIN dept d
+    ON e.dept_id = d.id;
+![img_2.png](img_2.png)
+## ★使用UNION关键字将左右连接并在一起(取并集)
+### （达到全连接效果,结果集包含满足连接条件的和左连接,右连接的左右数据）
+### 例：
+    SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+    FROM emp e
+    LEFT JOIN dept d
+    ON e.dept_id = d.id
+    UNION #可以将两条并在一起(并集)
+    SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
+    FROM emp e
+    RIGHT JOIN dept d
+    ON e.dept_id = d.id;
+![img.png](img.png)
+## 例：查看比所在地区平均工资高的员工？
+### 第一步.查看每个员工的工资及其所在的地区
+    SELECT e.sal,d.loc
+    FROM emp e,dept d
+    WHERE e.dept_id=d.id;
+### 第二步.先查询每个地区对应的平均工资(按照loc字段分组)----把该查询结果看成一张表
+    SELECT d.loc,AVG(e.sal) avg_sal
+    FROM emp e,dept d
+    WHERE e.dept_id=d.id
+    GROUP BY d.loc;
+### 第三步.关联三张表查询:员工表-部门表-(第2步子查询的结果集当成的表)
+###查询emp表数据
+SELECT * FROM emp;
+###(1).关联查询
+    SELECT e.name,a.loc,e.sal,a.avg_sal,e.dept_id
+    FROM emp e,dept d,(SELECT d.loc,AVG(e.sal) avg_sal
+                       FROM emp e,dept d
+                       WHERE e.dept_id=d.id
+                       GROUP BY d.loc ) a
+    WHERE e.dept_id=d.id
+    AND d.loc = a.loc
+    AND e.sal>a.avg_sal
+    ORDER BY dept_id; #按照部门ID排序,使结果清晰！
+###(2).内连接查询
+    SELECT e.name,a.loc,sal,a.avg_sal,e.dept_id
+    FROM emp e #员工表
+    JOIN dept d #部门表
+    ON e.dept_id=d.id #员工表与部门表的连接关系
+    JOIN (SELECT d.loc,AVG(sal) avg_sal #子查询表
+          FROM emp e,dept d
+          WHERE e.dept_id=d.id
+          GROUP BY d.loc) a
+    ON d.loc = a.loc #子查询表与另外两张表其中之一的连接关系
+    WHERE e.sal>a.avg_sal #过滤条件
+    ORDER BY dept_id; #按照部门ID排序,使结果清晰！
+![img_3.png](img_3.png)
