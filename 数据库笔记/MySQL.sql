@@ -388,8 +388,8 @@ SELECT * FROM userinfo;
 # 非空约束:该字段的值不允许为空
 # 外键约束:实际开发中几乎不使用外键约束
 
-CREATE TABLE student(   #primary(主要的) key主键;AUTO_INCREMENT自增
-                        id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE student(
+                        id INT AUTO_INCREMENT PRIMARY KEY,#primary(主要的) key主键
                         name VARCHAR(30) NOT NULL,#NOT NULL非空约束
                         age INT(3),
                         gender CHAR(1) #长度为1,超出按第一个
@@ -1360,7 +1360,7 @@ WHERE e.sal=max;
 #公司的员工组织结构,对于公司而言大家都属于员工,但是员工之间又存在上下级关系。
 #电商中常见的分类树
 
-#自连接：当前表的一个字段
+#自连接：当前表的一个字段与当前表的其他字段连接
 #查看每个员工和他的领导是谁？
 SELECT e.name,m.name
 FROM emp e,emp m
@@ -1393,3 +1393,41 @@ WHERE sal>(SELECT m.sal
                     JOIN emp m
                          ON e.manager=m.id
            WHERE e.name='孙悟空');
+
+#=================================================================================
+#JDBC测试
+CREATE TABLE userinfo(#创建userinfo表
+                         id INT primary key auto_increment,
+                         username VARCHAR(30) NOT NULL ,
+                         password VARCHAR(30),
+                         age INT(3),
+                         salary DOUBLE(7,2)
+);
+DROP TABLE userinfo;#删除userinfo表
+DESC userinfo;#查询userinfo表结构
+
+CREATE TABLE student(#创建student表
+                        id INT primary key auto_increment,
+                        name VARCHAR(10),
+                        age INT(3),
+                        class_id INT
+);
+DROP TABLE student;#删除student表
+
+CREATE TABLE class(#创建class表
+                      id INT primary key auto_increment,
+                      name VARCHAR(30)
+);
+DROP TABLE class;#删除class表
+
+#查看当前数据库有多少张表
+SHOW TABLES ;
+#查看class表中的所有数据
+SELECT * FROM student;
+SELECT * FROM class;
+
+#将class表中"一年级"改为"学前班"
+UPDATE class SET name='学前班' WHERE id=1;
+INSERT INTO class (name) VALUES ('1年级1班');
+ALTER TABLE class ADD name VARCHAR(3);
+

@@ -345,13 +345,13 @@
     SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
     FROM emp e,dept d
     WHERE e.dept_id=d.id;
-####b.内连接查询方式
+#### b.内连接查询方式
     SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
     FROM emp e
     JOIN dept d
     ON e.dept_id = d.id;
 ## 20.外连接：如果需要在结果集中列出不满足连接条件的记录时我们需要使用外连接
-###外连接有:
+### ★外连接有:
 #### (1).左外连接:以LEFT JOIN左侧表作为主表,其中的记录都要展示,不满足连接条件时,来自右侧表中记录的字段值全部为NULL
 #### (2).右外连接:以RIGHT JOIN右侧表作为主表,其中的记录都要展示,不满足连接条件时,来自左侧表中记录的字段值全部为NULL
 ### a.左外连接演示(LEFT JOIN)
@@ -390,6 +390,7 @@
     WHERE e.dept_id=d.id
     GROUP BY d.loc;
 ### 第三步.关联三张表查询:员工表-部门表-(第2步子查询的结果集当成的表)
+![img.png](img.png)
 ###查询emp表数据
 SELECT * FROM emp;
 ###(1).关联查询
@@ -415,3 +416,17 @@ SELECT * FROM emp;
     WHERE e.sal>a.avg_sal #过滤条件
     ORDER BY dept_id; #按照部门ID排序,使结果清晰！
 ![img_3.png](img_3.png)
+## 21.自连接
+### (1).该表中的一条记录可以对应该表中的其他多条记录时,就是自连接的关联关系
+### (2).自连接的设计是为了保存同样一组属性的数据之间存在上下级关系时(树状结构数据)
+### (3).公司的员工组织结构,对于公司而言大家都属于员工,但是员工之间又存在上下级关系。
+### (4).电商中常见的分类树
+### 例：查看每个员工和他的领导是谁？
+    SELECT e.name,m.name
+    FROM emp e,emp m
+    WHERE e.manager=m.id;
+##### 若使用内连接：
+    SELECT e.name,m.name
+    FROM emp e
+    JOIN emp m
+    ON e.manager=m.id;
