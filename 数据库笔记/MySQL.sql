@@ -388,8 +388,8 @@ SELECT * FROM userinfo;
 # 非空约束:该字段的值不允许为空
 # 外键约束:实际开发中几乎不使用外键约束
 
-CREATE TABLE student(
-                        id INT AUTO_INCREMENT PRIMARY KEY,#primary(主要的) key主键
+CREATE TABLE student(   #primary(主要的) key主键;AUTO_INCREMENT自增
+                        id INT AUTO_INCREMENT PRIMARY KEY,
                         name VARCHAR(30) NOT NULL,#NOT NULL非空约束
                         age INT(3),
                         gender CHAR(1) #长度为1,超出按第一个
