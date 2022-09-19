@@ -359,13 +359,13 @@
     FROM emp e
     LEFT JOIN dept d
     ON e.dept_id = d.id;
-![img_1.png](img_1.png)
+![img_4.png](img_4.png)
 ### b.右外连接演示(RIGHT JOIN)
     SELECT e.name,e.job,e.manager,e.sal,d.name,d.loc
     FROM emp e
     RIGHT JOIN dept d
     ON e.dept_id = d.id;
-![img_2.png](img_2.png)
+![img_5.png](img_5.png)
 ## ★使用UNION关键字将左右连接并在一起(取并集)
 ### （达到全连接效果,结果集包含满足连接条件的和左连接,右连接的左右数据）
 ### 例：
@@ -378,7 +378,7 @@
     FROM emp e
     RIGHT JOIN dept d
     ON e.dept_id = d.id;
-![img.png](img.png)
+![img_6.png](img_6.png)
 ## 例：查看比所在地区平均工资高的员工？
 ### 第一步.查看每个员工的工资及其所在的地区
     SELECT e.sal,d.loc
