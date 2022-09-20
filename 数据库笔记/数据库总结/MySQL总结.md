@@ -463,9 +463,9 @@ SELECT * FROM emp;
                  "    salary DOUBLE(7,2)" +
                  ")";
 ### ★execute(String sql)方法
-####该方法可以用来执行任意类型的SQL语句,但是由于DML,DQL有专门的的SQL
-####因此该方法常用于执行DDL语句(CREATE,DROP,ALTER)
-####注意：在sql查询时数据库的URL地址要使用该数据库empdb后再去查询
+#### 该方法可以用来执行任意类型的SQL语句,但是由于DML,DQL有专门的的SQL
+#### 因此该方法常用于执行DDL语句(CREATE,DROP,ALTER)
+#### 注意：在sql查询时数据库的URL地址要使用该数据库empdb后再去查询
     statement.execute(sal);//到SQL控制台可以查到该表的创建
 ## 3.执行DML语句(数据操作语言)
 ### ★int executeUpdate(String sql)
@@ -496,8 +496,8 @@ SELECT * FROM emp;
 ### ★ResultSet  executeQuery(String sql)
 #### 该方法会返回一个ResultSet对象，这个对象封装了查询出来的结果集。
 ### ★boolean next()
-####该方法是结果集核心方法之一,由于让结果集游标向下一条记录,返回值表示是否有下一条。
-####注：游标默认是在结果集第一条记录上
+#### 该方法是结果集核心方法之一,由于让结果集游标向下一条记录,返回值表示是否有下一条。
+#### 注：游标默认是在结果集第一条记录上
 ### _例：查看6岁的学生都有谁？_
     try(
     //事先创建了DBUtil类,在静态块加载SQL路径,getConnection()方法连接数据库
@@ -531,8 +531,8 @@ SELECT * FROM emp;
         rs.close();//当结果集遍历完毕后将其关闭
     }catch(Exception e){}
 ## 5.预编译SQL语句
-###预编译SQL语句是将在SQL中会变化的值(原来拼接SQL语句的部分)先以"?"进行占位
-###解决拼接SQL语句会存在两个明显问题:
+### 预编译SQL语句是将在SQL中会变化的值(原来拼接SQL语句的部分)先以"?"进行占位
+### 解决拼接SQL语句会存在两个明显问题:
 #### (1):代码复杂度高，容易出现错误，且可读性差。
 #### (2):存在着SQL注入攻击
 ### _例：查看任意员工的信息:_
@@ -624,13 +624,15 @@ SELECT * FROM userinfo WHERE username=? AND password=?
                 int age = random.nextInt(7) + 6;//年龄6-12岁
                 int c = age == 6 ? 1 : (age - 7) * 4 + random.nextInt(4) + 2;//+2是因为1年级的ID从2开始
                 String name = NameCreator.createName();
+                //拼写：
                 String sql = "INSERT INTO student1 (name,age,class_id) VALUES ('" + name + "'," + age + "," + c + ")";
                 statement.executeUpdate(sql);
             }
             long end = System.currentTimeMillis();
             System.out.println("插入完毕，耗时:"+(end-start)+"ms");//2098ms
             */
-
+            
+            //预编译写法：
             String sql = "INSERT INTO student1 (name,age,class_id) VALUES (?,?,?)";
             PreparedStatement statement = conn.prepareStatement(sql);
             Random random = new Random();
