@@ -2,9 +2,7 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/JDBCDemo/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/JDBCDemo/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/V1/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/V1/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/V10/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/V10/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/V11/src/main/java" charset="UTF-8" />
@@ -26,13 +24,10 @@
     <file url="file://$PROJECT_DIR$/V19/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/V19/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/V2/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/V2/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/V20/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/V20/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/V3/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/V3/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/V4/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/V4/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/V5/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/V5/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/V6/src/main/java" charset="UTF-8" />
@@ -43,7 +38,5 @@
     <file url="file://$PROJECT_DIR$/V8/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/V9/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/V9/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
   </component>
 </project>

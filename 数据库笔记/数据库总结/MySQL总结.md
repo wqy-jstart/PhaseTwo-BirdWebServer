@@ -452,7 +452,7 @@ SELECT * FROM emp;
     //第三步
     //通过连接对象Connection获取执行SQL的执行对象Statement
     Statement statement = conn.createStatement();
-## 例：
+### _例：新建一张表_
     新建一张表：userinfo
     表字段：id,username,password,age,salary
     String sal = "CREATE TABLE userinfo(" +
@@ -466,4 +466,187 @@ SELECT * FROM emp;
 ####该方法可以用来执行任意类型的SQL语句,但是由于DML,DQL有专门的的SQL
 ####因此该方法常用于执行DDL语句(CREATE,DROP,ALTER)
 ####注意：在sql查询时数据库的URL地址要使用该数据库empdb后再去查询
-    statement.execute(sal);//到sql控制台可以查到该表的创建
+    statement.execute(sal);//到SQL控制台可以查到该表的创建
+## 3.执行DML语句(数据操作语言)
+### ★int executeUpdate(String sql)
+#### 该方法通常用来专门执行DML(INSERT,UPDATE,DELETE)语句，返回的int值表示影响了表中多少条记录
+### _例：向class表中插入数据：1年级1班_
+    Class.forName("com.mysql.cj.jdbc.Driver");//获取SQL的加载路径
+    try (   //与SQL建立连接
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/empdb", "root", "root");
+    ) {
+        Statement statement = conn.createStatement();
+        /*
+        向class表中插入数据:1年级1班
+        */
+        String sql = "INSERT INTO class (name) VAlUES ('1年级1班')";
+        /*
+        int executeUpdate(String sql)
+        通常用来专门执行DML(INSERT,UPDATE,DELETE)语句，返回的int值表示影响了表中多少条记录
+        */
+        int num = statement.executeUpdate(sql);
+       if(num>0){//说明至少影响了表中1条记录
+        System.out.println("插入成功");
+        }else{
+        System.out.println("插入失败");
+        }
+    }catch (Exception e){}
+## 4.指定DQL语句(数据查询语言)
+### Statement中有专门用来执行查询语句DQL的方法:
+### ★ResultSet  executeQuery(String sql)
+#### 该方法会返回一个ResultSet对象，这个对象封装了查询出来的结果集。
+### ★boolean next()
+####该方法是结果集核心方法之一,由于让结果集游标向下一条记录,返回值表示是否有下一条。
+####注：游标默认是在结果集第一条记录上
+### _例：查看6岁的学生都有谁？_
+    try(
+    //事先创建了DBUtil类,在静态块加载SQL路径,getConnection()方法连接数据库
+            Connection connection = DBUtil.getConnection();
+    ){
+        Statement statement = connection.createStatement();
+        String sql = "SELECT id,name,age,class_id "+
+                      "FROM student "+
+                      "WHERE age=6";
+        /*
+           结果集的遍历类似集合的迭代器
+           boolean next()
+           该方法是结果集核心方法之一,由于让结果集游标向下一条记录,返回值表示是否有下一条。
+           注：游标默认是在结果集第一条记录上
+        */
+        ResultSet rs = statement.executeQuery(sql);
+        while(rs.next()) {
+            //根据字段位置获取
+        //          int id = rs.getInt(1);//获取该条记录第一个字段的值(因为该字段是int型，所以用getInt())
+        //          String name = rs.getString(2);
+        //          int age = rs.getInt(3);
+        //          int classId = rs.getInt(4);
+            //根据字段名
+            int id = rs.getInt("id");
+            String name = rs.getString("name");
+            int age = rs.getInt("age");
+            int classId = rs.getInt("class_id");
+            System.out.println(id + "," + name + "," + age + "," + classId);
+        }
+        //如果结果集数据需要保存，应当在当前java程序中用集合等形式保存结果集使用。
+        rs.close();//当结果集遍历完毕后将其关闭
+    }catch(Exception e){}
+## 5.预编译SQL语句
+###预编译SQL语句是将在SQL中会变化的值(原来拼接SQL语句的部分)先以"?"进行占位
+###解决拼接SQL语句会存在两个明显问题:
+#### (1):代码复杂度高，容易出现错误，且可读性差。
+#### (2):存在着SQL注入攻击
+### _例：查看任意员工的信息:_
+    try(
+    //事先创建了DBUtil类,在静态块加载SQL路径,getConnection()方法连接数据库
+            Connection connection = DBUtil.getConnection();
+    ){
+        Scanner scanner = new Scanner(System.in);
+            System.out.println("请输入要查询的员工名称?");
+            String name = scanner.nextLine();
+            /*
+                拼接SQL语句会存在两个明显问题:
+                1:代码复杂度高，容易出现错误，且可读性差。
+                2:存在着SQL注入攻击
+             */
+            /*String sql = "SELECT id,name,salary,dept_id " +
+                         "FROM emp " +
+                         "WHERE name='"+name+"'";*/
+            String sql = "SELECT id,name,sal,dept_id " +
+                         "FROM emp " +
+                         "WHERE name=?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            //name字段是VARCHAR，因此这里设置该?对应的值应当选取字符串类型
+            ps.setString(1,name);//第1个"?"要设置为字符串的值'XXX'
+            //该方法让结果集游标向下一条记录,返回值表示是否有下一条。
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                int id = rs.getInt(1);
+                String n = rs.getString(2);
+                int salary = rs.getInt(3);
+                int deptId = rs.getInt(4);
+                System.out.println(id+","+n+","+salary+","+deptId);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+## 6.在DML语句中使用预编译SQL
+### _例：在student1中插入数据:_
+        try(
+    //事先创建了DBUtil类,在静态块加载SQL路径,getConnection()方法连接数据库
+                Connection connection = DBUtil.getConnection();
+        ){
+            String sql = "INSERT INTO student1(name,age,class_id) VALUES(?,?,?)";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1,"张三");
+            ps.setInt(2,5);
+            ps.setInt(3,0);
+            //利用该方法返回影响表中数据的条数判断执行情况
+            int num = ps.executeUpdate();
+            if(num>0){
+                System.out.println("插入成功");
+            }else{
+                System.out.println("插入失败");
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+## ★总结
+Statement每次执行SQL语句时，都会将该SQL语句发送给数据库，而数据库接收到SQL语句后会解析SQL语句并生成
+执行计划(该操作是一个耗时的操作)。然后在执行该计划。
+当SQL语义相同，但是数据不同时，如果我们执行这些SQL，那么每次数据库接收SQL都要生成执行计划。
+
+PreparedStatement会在创建时先将预编译SQL语句发送给数据库来生成执行计划(仅1次)，并且"?"内容会在生成的
+执行计划中当作"参数".
+在多次执行时，每次仅需要将"?"对应的数据发送给数据库，来重用预编译SQL对应的执行计划，这样效率会高很多。
+
+Statement执行SQL语句时，数据是需要拼接SQL来完成，这存在SQL注入攻击，但是PreparedStatement会先将
+预编译SQL发送给数据库生成执行计划，那么所有数据都会被当作参数。因此就算传入的是注入攻击的内容，它也仅会
+当这部分内容为参数值，语义已经不会发生改变了(因为执行计划已经生成。)
+
+拼接SQL注入攻击内容后，语义发生了改变，因此数据库接收到该SQL是就错误的执行了内容
+SELECT * FROM userinfo WHERE username='xxx' AND password='1' OR '1'='1'
+
+预编译SQL先行发送给数据，生成执行计划后，数据库就理解了操作，并等待你发送过来用户名和密码的值了
+SELECT * FROM userinfo WHERE username=? AND password=?
+当我们发送SQL注入攻击内容时
+参数1(第一个?的内容):xxx,  参数2(第二个?的内容):1' OR '1'='1
+此时数据库会理解为你要查询的人的密码是"1' OR '1'='1",并不会将其当作SQL语句的一部分了。
+### _例：向student1表中插入1000条数据:_
+        try (
+    //事先创建了DBUtil类,在静态块加载SQL路径,getConnection()方法连接数据库
+                Connection conn = DBUtil.getConnection()
+        ) {
+            /*
+            Statement statement = conn.createStatement();
+            Random random = new Random();
+            long start = System.currentTimeMillis();
+            for(int i=0;i<1000;i++) {
+                int age = random.nextInt(7) + 6;//年龄6-12岁
+                int c = age == 6 ? 1 : (age - 7) * 4 + random.nextInt(4) + 2;//+2是因为1年级的ID从2开始
+                String name = NameCreator.createName();
+                String sql = "INSERT INTO student1 (name,age,class_id) VALUES ('" + name + "'," + age + "," + c + ")";
+                statement.executeUpdate(sql);
+            }
+            long end = System.currentTimeMillis();
+            System.out.println("插入完毕，耗时:"+(end-start)+"ms");//2098ms
+            */
+
+            String sql = "INSERT INTO student1 (name,age,class_id) VALUES (?,?,?)";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            Random random = new Random();
+            long start = System.currentTimeMillis();
+            for(int i=0;i<1000;i++) {
+                int age = random.nextInt(7) + 6;//年龄6-12岁
+                int c = age == 6 ? 1 : (age - 7) * 4 + random.nextInt(4) + 2;//+2是因为1年级的ID从2开始
+                String name = NameCreator.createName();
+                statement.setString(1,name);
+                statement.setInt(2,age);
+                statement.setInt(3,c);
+                statement.executeUpdate();
+            }
+            long end = System.currentTimeMillis();
+            System.out.println("插入完毕，耗时:"+(end-start)+"ms");//498ms
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }

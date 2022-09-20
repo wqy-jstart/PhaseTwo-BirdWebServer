@@ -14,9 +14,9 @@ public class JDBCDemo3 {
         ) {
             Statement statement = connection.createStatement();
             //查看6岁的学生都有谁？
-            String sql = "SELECT id,name,age,class_id\n" +
-                    "FROM student\n" +
-                    "WHERE age=6";
+            String sql = "SELECT id,name,age,class_id " +
+                         "FROM student " +
+                         "WHERE age=6";
             /*
                Statement中有专门用来执行查询语句DQL的方法：ResultSet executeQuery(String sql)
                该方法会返回一个ResultSet对象,这个对象封装了查询出来的结果集
