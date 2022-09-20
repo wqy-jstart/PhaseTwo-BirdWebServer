@@ -7,10 +7,7 @@ import com.webserver.http.HttpServletResponse;
 import com.webserver.util.DBUtil;
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 @Controller
 public class UserController {
@@ -89,12 +86,14 @@ public class UserController {
         try(
                 Connection connection = DBUtil.getConnection()
         ) {
-            Statement statement = connection.createStatement();
             String sql = "SELECT id,username,password,nickname,age " +
                          "FROM userinfo " +
-                         "WHERE username='"+username+"' " +
-                         "AND password='"+password+"'";
-            ResultSet rs = statement.executeQuery(sql);
+                         "WHERE username=? " +
+                         "AND password=?";
+            PreparedStatement pr = connection.prepareStatement(sql);
+            pr.setString(1,username);
+            pr.setString(2,password);
+            ResultSet rs = pr.executeQuery();
             if (rs.next()) {
                 response.sendRedirect("/login_success.html");
             } else {

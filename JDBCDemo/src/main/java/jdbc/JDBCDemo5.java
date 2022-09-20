@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/**
+ * 插入张三字段
+ */
 public class JDBCDemo5 {
     public static void main(String[] args) {
         try(

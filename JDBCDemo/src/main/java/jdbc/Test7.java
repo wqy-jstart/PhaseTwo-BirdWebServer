@@ -4,7 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Scanner;
-
+/**
+ * 将emp表中的只用名字的员工删除。名字可以由用户输入
+ *
+ * 例如:
+ * 灭霸
+ * 将灭霸从emp表中删除
+ */
 public class Test7 {
     public static void main(String[] args) {
         try(
