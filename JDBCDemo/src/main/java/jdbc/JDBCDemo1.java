@@ -53,7 +53,7 @@ public class JDBCDemo1 {
            execute(String sql)
            该方法可以用来执行任意类型的SQL语句,但是由于DML,DQL有专门的的SQL
            因此该方法常用于执行DDL语句(CREATE,DROP,ALTER)
-           注意：在sql查询时要使用该数据库empdb后再去查询
+           注意：在sql查询时数据库的URL地址要使用该数据库empdb后再去查询
          */
             statement.execute(sal);//到sql控制台可以查到该表的创建
             System.out.println("执行完毕！");

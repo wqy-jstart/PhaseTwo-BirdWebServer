@@ -1431,3 +1431,76 @@ UPDATE class SET name='学前班' WHERE id=1;
 INSERT INTO class (name) VALUES ('1年级1班');
 ALTER TABLE class ADD name VARCHAR(3);
 
+#=================================================================
+
+#查看3年级2班的所有学生
+SELECT s.name,c.name
+FROM student s
+         JOIN class c
+              ON s.class_id=c.id
+WHERE c.name='3年级2班';
+
+DESC student;
+
+#查看年龄等于6的同学
+SELECT id,name,age,class_id
+FROM student
+WHERE age=6;
+
+#新建数据库
+CREATE DATABASE bbsdb;
+USE bbsdb;
+CREATE TABLE userinfo(
+                         id INT PRIMARY KEY AUTO_INCREMENT,
+                         username VARCHAR(30),
+                         password INT,
+                         age INT(3)
+);
+CREATE TABLE article(
+                        id INT PRIMARY KEY AUTO_INCREMENT,
+                        title VARCHAR(30),
+                        content VARCHAR(100),
+                        u_id INT
+);
+#修改表中的某个字段
+ALTER TABLE article CHANGE title title VARCHAR(300);
+ALTER TABLE article CHANGE content content VARCHAR(3000);
+ALTER TABLE userinfo ADD nickname VARCHAR(30) AFTER password;
+#查询article表中的详细信息
+SHOW CREATE TABLE article;
+#查看表article的结构
+DESC article;
+#查询userinfo表中的详细信息
+SHOW CREATE TABLE userinfo;
+#查看表userinfo的结构
+DESC userinfo;
+SELECT * FROM emp;
+
+SELECT e.name,e.sal,e.dept_id,d.name
+FROM emp e
+         JOIN dept d
+              ON e.dept_id = d.id;
+
+SELECT 1 FROM userinfo WHERE username='武清';
+
+SELECT e.id,e.name,e.sal,e.dept_id
+FROM emp e
+         JOIN dept d
+              ON e.dept_id = d.id
+WHERE d.name='神仙' AND e.sal>2000;
+
+SELECT * FROM emp;
+
+DELETE FROM emp WHERE name='灭霸';
+
+SHOW TABLES ;
+SELECT * FROM bbsdb.article;
+SELECT * FROM bbsdb.userinfo;
+
+
+SELECT username,id
+FROM userinfo
+WHERE username='武清源';
+
+INSERT INTO article(title,content,u_id) VALUES ('标题','haode',userinfo.id);
+
