@@ -12,6 +12,7 @@ import java.util.Random;
  */
 public class Test4 {
     public static void main(String[] args) throws ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
         try(
                 Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/empdb?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true","root","root");
         ) {
@@ -20,19 +21,18 @@ public class Test4 {
             int a;
             int age;
             for (int i = 0; i < 1000; i++) {
-                a=random.nextInt(25)+1;
+//                a=random.nextInt(25)+1;
                 age=random.nextInt(7)+6;//年龄
+                a = age==6?1:(age-7)*4+random.nextInt(4)+2;//+2是因为1年级的ID从2开始
                 String name = NameCreator.createName();
                 String sql = "INSERT INTO student (name,age,class_id) VALUES ('"+name+"',"+age+","+a+");";
-                System.out.println(sql);
-                int c = age==6?0:(age-7)*4+random.nextInt(4)+2;//+2是因为1年级的ID从2开始
-                System.out.println("年龄"+age+"年级ID:"+c);
-//                int num = statement.executeUpdate(sql);
-//                if (num>0){
-//                    System.out.println("插入成功！");
-//                }else {
-//                    System.out.println("插入失败！");
-//                }
+//                System.out.println(sql);
+                int num = statement.executeUpdate(sql);
+                if (num>0){
+                    System.out.println("插入成功！");
+                }else {
+                    System.out.println("插入失败！");
+                }
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();

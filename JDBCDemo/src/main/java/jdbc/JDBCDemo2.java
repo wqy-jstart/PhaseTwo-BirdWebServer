@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-
+/**
+ * 执行DML语句(数据操作语言)
+ */
 public class JDBCDemo2 {
     public static void main(String[] args) throws ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -18,7 +20,7 @@ public class JDBCDemo2 {
            String sql = "INSERT INTO class(name) VALUES('1年级1班')";
            /*
               int executeUpdate(String sql)
-              通常用来专门执行DML(INSERT,UPDATE,DELETE)语句,返回的int值表示影响了表中多少条记录
+              通常用来专门执行DML(INSERT,UPDATE,DELETE)语句,返回的int值表示"影响"了表中多少条记录
             */
            int num = statement.executeUpdate(sql);
            if (num>0){ //说明至少影响了表中的1条记录

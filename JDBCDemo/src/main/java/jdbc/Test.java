@@ -15,18 +15,18 @@ public class Test {
         Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/empdb?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true","root","root")
         ){
             Statement statement = conn.createStatement();
-            String sql1 = "CREATE TABLE student(" +
+            String sql1 = "CREATE TABLE student1(" +
                     "    id INT primary key auto_increment," +
                     "    name VARCHAR(10)," +
                     "    age INT(3)," +
                     "    class_id INT" +
                     ")";
-            String sql2 = "CREATE TABLE class(" +
-                    "    id INT primary key auto_increment," +
-                    "    name VARCHAR(30)" +
-                    ")";
+//            String sql2 = "CREATE TABLE class(" +
+//                    "    id INT primary key auto_increment," +
+//                    "    name VARCHAR(30) NOT NULL" +
+//                    ")";
             statement.execute(sql1);
-            statement.execute(sql2);
+//            statement.execute(sql2);
             System.out.println("执行完毕！");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
