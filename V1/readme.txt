@@ -1,0 +1,6 @@
+启动WebServer的主类
+创建BirdBootApplication服务器,
+服务端实例化ServerSocket传入并设置一个端口号,
+当输入http://localhost:8088时即可与服务端建立连接来获取浏览器发过来的请求
+创建ClientHandler线程负责处理与某个客户端的一次HTTP交互,
+当浏览器发送请求时,线程获取输入流来读取浏览器发送过来的请求显示到控制台
