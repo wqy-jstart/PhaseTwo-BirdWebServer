@@ -31,9 +31,9 @@ public class UserController {
             password==null||password.isEmpty()||
             nickname==null||nickname.isEmpty()||
             ageStr==null||ageStr.isEmpty()||
-            !ageStr.matches("[0-9]+")
+                !ageStr.matches("[0-9]+")
         ){
-            //信息输入有误提示页面
+            //信息输入有误提示错误页面
             response.sendRedirect("/reg_info_error.html");
             return;
         }

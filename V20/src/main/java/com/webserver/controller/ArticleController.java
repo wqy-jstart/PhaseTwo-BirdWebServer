@@ -50,7 +50,7 @@ public class ArticleController {
                 ps1.setString(2,content);//将用户输入的内容插入到article表中
                 ps1.setInt(3,id);
                 int num = ps1.executeUpdate();//插入,影响内容
-                if (num>0){//影响了表的条数,发表成功！
+                if (num>0){//检测影响了表的条数>0,发表成功！
                     response.sendRedirect("/write_article_success.html");
                 }else {//没有影响表的条数,发表失败！
                     response.sendRedirect("/write_article_fail.html");
