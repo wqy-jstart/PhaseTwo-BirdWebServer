@@ -28,7 +28,7 @@ public class JDBCDemo3 {
               该方法是结果集核心方法之一,由于让结果集游标向下一条记录,返回值表示是否有下一条。
               注：游标默认是在结果集第一条记录上
              */
-            while (rs.next()){
+            while (rs.next()){//因为查询的是多条,用while循环获取并输出
                 //根据字段位置获取
                 //获取该条记录第一个字段的值(因为该字段时int型,所以用getInt())
                 int id = rs.getInt(1);

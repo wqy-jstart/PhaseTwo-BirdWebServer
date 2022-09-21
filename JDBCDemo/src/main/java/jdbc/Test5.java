@@ -15,12 +15,12 @@ public class Test5 {
         ){
             Statement statement = connection.createStatement();
             String sql = "SELECT s.name sn,s.age,c.name cn\n" +
-                    "FROM student s\n" +
-                    "JOIN class c\n" +
-                    "ON s.class_id=c.id\n" +
-                    "WHERE c.name='3年级2班'";
+                         "FROM student s\n" +
+                         "JOIN class c\n" +
+                         "ON s.class_id=c.id\n" +
+                         "WHERE c.name='3年级2班'";
             ResultSet rs = statement.executeQuery(sql);
-            while (rs.next()){
+            while (rs.next()){//因为查询的是多条,用while循环获取并输出
                 String sname = rs.getString("sn");
                 int sage = rs.getInt("age");
                 String cname = rs.getString("cn");
