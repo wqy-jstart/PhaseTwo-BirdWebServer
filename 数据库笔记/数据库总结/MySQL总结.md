@@ -648,4 +648,3 @@ SELECT * FROM userinfo WHERE username=? AND password=?
 
         }catch (Exception e){
             e.printStackTrace();
-        }

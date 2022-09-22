@@ -49,7 +49,7 @@ public class UserController {
             String sql = "SELECT 1 FROM userinfo WHERE username='"+username+"'";
             ResultSet rs = statement.executeQuery(sql);
             //如果WHERE条件成立说明此次用户名和上一次相同,可查到数字1,next()方法为true
-            while (rs.next()){ //判断结果集是否有一条记录
+            while (rs.next()){ //★判断结果集是否有一条记录
                 response.sendRedirect("/have_user.html");
                 return;
             }
@@ -60,7 +60,7 @@ public class UserController {
             sql = "INSERT INTO userinfo (username,password,nickname,age) " +
                          "VALUES('"+username+"','"+password+"','"+nickname+"',"+age+")";
             System.out.println(sql);
-            int num = statement.executeUpdate(sql);
+            int num = statement.executeUpdate(sql);//★该方法返回影响了多少条记录
             if (num>0){
                 //利用响应对象要求浏览器访问注册成功页面
                 response.sendRedirect("/reg_success.html");//响应页面至该地址
