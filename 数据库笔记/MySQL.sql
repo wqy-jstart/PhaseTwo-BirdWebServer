@@ -1431,7 +1431,7 @@ UPDATE class SET name='学前班' WHERE id=1;
 INSERT INTO class (name) VALUES ('1年级1班');
 ALTER TABLE class ADD name VARCHAR(3);
 
-#=================================================================
+#========================================================
 
 #查看3年级2班的所有学生
 SELECT s.name,c.name
@@ -1481,8 +1481,6 @@ FROM emp e
          JOIN dept d
               ON e.dept_id = d.id;
 
-SELECT 1 FROM userinfo WHERE username='武清';
-
 SELECT e.id,e.name,e.sal,e.dept_id
 FROM emp e
          JOIN dept d
@@ -1497,10 +1495,83 @@ SHOW TABLES ;
 SELECT * FROM bbsdb.article;
 SELECT * FROM bbsdb.userinfo;
 
+DELETE FROM article WHERE id IN(3,4);
 
 SELECT username,id
 FROM userinfo
 WHERE username='武清源';
 
 INSERT INTO article(title,content,u_id) VALUES ('标题','haode',userinfo.id);
+
+SELECT u.name,a.id,a.title
+FROM userinfo u,article a
+WHERE u.id=a.u_id;
+
+UPDATE article SET content='我的第一篇帖子'WHERE id=1;
+
+# 表设计面试题:
+# 2021年过年时小明在这些天收到了许多亲戚\朋友还有同时的红包,也发出了一些红包,
+# 有的是微信,有的是支付宝也有现金,请参考下面的题目帮小明设计表格保存红包的信息
+# 1.设计表(至少包含一张流水表)
+# - 先列出需要保存的数据有哪些?
+# - 关系,红包类型,时间 ,金额,姓名,名字
+# 2.统计2021年2月15号到现在的所有红包收益
+# 3.查询2021年2月15号到现在 金额大于100所有女性亲戚的名字和金额
+# 4.查询三个平台(微信,支付宝,现金)分别收入的红包金额
+
+#1.设计表(至少包含一张流水表)
+CREATE DATABASE webday02 charset=utf8;
+USE webday02;
+CREATE TABLE trade(
+                      id INT PRIMARY KEY AUTO_INCREMENT,
+                      money INT,
+                      type VARCHAR(20),
+                      time DATE,
+                      p_id INT
+);
+CREATE TABLE person(
+                       id INT primary key AUTO_INCREMENT,
+                       name VARCHAR(20),
+                       gender CHAR(1),
+                       rel VARCHAR(10)
+);
+INSERT INTO person(name,gender,rel) VALUES ('刘德华','男','亲戚'),('杨幂','女','亲戚'),('马云','男','同事'),('特朗普','男','朋友'),('貂蝉','女','同事');
+insert into trade values(null,1000,'微信','2021-03-20',1),
+
+                        (null,500,'现金','2021-04-14',2),(null,-50,'现金','2021-04-14',2),
+
+                        (null,20000,'支付宝','2021-03-11',3),(null,-5,'支付宝','2021-03-11',3),
+
+                        (null,2000,'微信','2021-05-18',4),
+
+                        (null,-20000,'微信','2021-07-22',5);
+SELECT * FROM person;
+SELECT * FROM trade;
+
+#2.统计2021年2月15号到现在的所有红包收益
+SELECT SUM(money)
+FROM trade
+WHERE time>='2021-03-15';
+
+#3.查询2021年2月15号到现在 金额大于100所有女性亲戚的名字和金额
+SELECT p.name,t.money
+FROM person p
+         JOIN trade t
+              ON p.id=t.id
+WHERE t.time>'2021-02-15'
+  AND gender='女'
+  AND rel='亲戚'
+  AND abs(money)>100;#abs为绝对值
+
+#4.查询三个平台(微信,支付宝,现金)分别收入的红包金额
+SELECT type,SUM(money)
+FROM trade
+WHERE money>0
+GROUP BY type;
+
+
+
+
+
+
 
