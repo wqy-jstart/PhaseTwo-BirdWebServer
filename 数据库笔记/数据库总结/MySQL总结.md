@@ -596,18 +596,11 @@ SELECT * FROM emp;
 #### (2).PreparedStatement会在创建时先将预编译SQL语句发送给数据库来生成执行计划(仅1次)，并且"?"内容会在生成的执行计划中当作"参数".在多次执行时，每次仅需要将"?"对应的数据发送给数据库，来重用预编译SQL对应的执行计划，这样效率会高很多。
 ![img_2.png](img_2.png)
 
-Statement执行SQL语句时，数据是需要拼接SQL来完成，这存在SQL注入攻击，但是PreparedStatement会先将
-预编译SQL发送给数据库生成执行计划，那么所有数据都会被当作参数。因此就算传入的是注入攻击的内容，它也仅会
-当这部分内容为参数值，语义已经不会发生改变了(因为执行计划已经生成。)
+#### Statement执行SQL语句时，数据是需要拼接SQL来完成，这存在SQL注入攻击，但是PreparedStatement会先将预编译SQL发送给数据库生成执行计划，那么所有数据都会被当作参数。因此就算传入的是注入攻击的内容，它也仅会当这部分内容为参数值，语义已经不会发生改变了(因为执行计划已经生成。)
 
-拼接SQL注入攻击内容后，语义发生了改变，因此数据库接收到该SQL是就错误的执行了内容
-SELECT * FROM userinfo WHERE username='xxx' AND password='1' OR '1'='1'
+#### 拼接SQL注入攻击内容后，语义发生了改变，因此数据库接收到该SQL是就错误的执行了内容SELECT * FROM userinfo WHERE username='xxx' AND password='1' OR '1'='1'
 
-预编译SQL先行发送给数据，生成执行计划后，数据库就理解了操作，并等待你发送过来用户名和密码的值了
-SELECT * FROM userinfo WHERE username=? AND password=?
-当我们发送SQL注入攻击内容时
-参数1(第一个?的内容):xxx,  参数2(第二个?的内容):1' OR '1'='1
-此时数据库会理解为你要查询的人的密码是"1' OR '1'='1",并不会将其当作SQL语句的一部分了。
+####预编译SQL先行发送给数据，生成执行计划后，数据库就理解了操作，并等待你发送过来用户名和密码的值了SELECT * FROM userinfo WHERE username=? AND password=?当我们发送SQL注入攻击内容时参数1(第一个?的内容):xxx,  参数2(第二个?的内容):1' OR '1'='1此时数据库会理解为你要查询的人的密码是"1' OR '1'='1",并不会将其当作SQL语句的一部分了。
 ### _例：向student1表中插入1000条数据:_
         try (
     //事先创建了DBUtil类,在静态块加载SQL路径,getConnection()方法连接数据库
