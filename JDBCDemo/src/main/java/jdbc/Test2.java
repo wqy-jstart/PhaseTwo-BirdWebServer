@@ -16,7 +16,7 @@ public class Test2 {
         ){
             Statement statement = conn.createStatement();
             String sql = "UPDATE class SET name='学前班' WHERE id=1";
-            int num = statement.executeUpdate(sql);
+            int num = statement.executeUpdate(sql);//用此方法返回影响数据的条数
             if (num>0){
                 System.out.println("修改成功！");
             }else {

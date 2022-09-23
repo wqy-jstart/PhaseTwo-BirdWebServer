@@ -10,16 +10,16 @@ import java.sql.Statement;
  */
 public class Test3 {
     public static void main(String[] args) throws ClassNotFoundException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
+        Class.forName("com.mysql.cj.jdbc.Driver");//加载MySQL路径
         try(
         Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/empdb?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true","root","root");
         ) {
             Statement statement = conn.createStatement();
-            for (int i = 1; i <= 6; i++) {
+            for (int i = 1; i <= 6; i++) {//嵌套插入
                 for (int j = 1; j <= 4; j++) {
                     String sql = "INSERT INTO class (name) VALUES ('"+i+"年级"+j+"班')";
-                    int num = statement.executeUpdate(sql);
-                    if (num>0){
+                    int num = statement.executeUpdate(sql);//返回插入后影响数据的条数
+                    if (num>0){//至少影响一条
                         System.out.println("插入完毕！");
                     }else {
                         System.out.println("插入失败！");

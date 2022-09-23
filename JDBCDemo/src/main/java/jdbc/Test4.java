@@ -20,15 +20,15 @@ public class Test4 {
             Random random = new Random();
             int a;
             int age;
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 1000; i++) {//循环插入随机年龄和年级1000次
 //                a=random.nextInt(25)+1;
                 age=random.nextInt(7)+6;//年龄
                 a = age==6?1:(age-7)*4+random.nextInt(4)+2;//+2是因为1年级的ID从2开始
                 String name = NameCreator.createName();
                 String sql = "INSERT INTO student (name,age,class_id) VALUES ('"+name+"',"+age+","+a+");";
 //                System.out.println(sql);
-                int num = statement.executeUpdate(sql);
-                if (num>0){
+                int num = statement.executeUpdate(sql);//该方法返回插入后影响数据的条数
+                if (num>0){//若至少影响了一条则插入成功!
                     System.out.println("插入成功！");
                 }else {
                     System.out.println("插入失败！");

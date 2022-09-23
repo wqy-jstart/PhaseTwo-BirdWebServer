@@ -19,7 +19,7 @@ public class Test5 {
                          "JOIN class c\n" +
                          "ON s.class_id=c.id\n" +
                          "WHERE c.name='3年级2班'";
-            ResultSet rs = statement.executeQuery(sql);
+            ResultSet rs = statement.executeQuery(sql);//返回一个查询的结果集
             while (rs.next()){//因为查询的是多条,用while循环获取并输出
                 String sname = rs.getString("sn");
                 int sage = rs.getInt("age");

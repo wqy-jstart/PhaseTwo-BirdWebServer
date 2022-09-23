@@ -29,18 +29,19 @@ public class Test6 {
                         "JOIN dept d " +
                         "ON e.dept_id = d.id " +
                         "WHERE d.name=? AND e.sal>?";
-            PreparedStatement pr = connection.prepareStatement(sql);
-            pr.setString(1,name);
-            pr.setInt(2,salary);
-            ResultSet rs = pr.executeQuery();
-            while (rs.next()){
+            PreparedStatement pr = connection.prepareStatement(sql);//使用预编译来处理执行SQL语句
+            pr.setString(1,name);//将第一个?设置为用户输入的名字
+            pr.setInt(2,salary);//将第二个?设置为用户输入的最低工资
+            ResultSet rs = pr.executeQuery();//将以上两个输入内容作为过滤条件执行SQL语句返回查询到的结果集
+            while (rs.next()){//若查询到就会返回true
+                //获取需要查询的结果集并输出
                 String ename = rs.getString(1);
                 int sal = rs.getInt(2);
                 String dname = rs.getString(3);
                 int dept = rs.getInt(4);
                 System.out.println(ename+","+sal+","+dname+","+dept);
             }
-            rs.close();
+            rs.close();//关闭结果集
         }catch (SQLException throwables){
             throwables.printStackTrace();
         }
