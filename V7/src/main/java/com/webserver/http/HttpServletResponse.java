@@ -19,8 +19,6 @@ public class HttpServletResponse {
     private int statusCode = 200;//状态代码
     private String statusReason = "OK";//状态描述
 
-    //响应头相关信息
-
     //响应正文相关信息
     private File contentFile;//响应正文对应的实体文件
 

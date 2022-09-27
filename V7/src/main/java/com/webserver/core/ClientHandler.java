@@ -54,10 +54,10 @@ public class ClientHandler implements Runnable{
                response.setContentFile(file);
             }else {
                 System.out.println("文件不存在！");
-                response.setStatusCode(404);
+                response.setStatusCode(404);/*设置响应状态行信息*/
                 response.setStatusReason("NotFound");
                 file = new File(staticDir, "root/404.html");
-                response.setContentFile(file);
+                response.setContentFile(file);/*设置响应正文的内容文件*/
             }
 
 //           3:发送响应(将处理结果回馈给浏览器)
