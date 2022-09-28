@@ -14,6 +14,7 @@ import java.util.Set;
  * 一个响应由三部分构成:状态行，响应头，响应正文。
  */
 public class HttpServletResponse {
+    //创建一个MimetypesFileTypeMap类型的对象来确定正确的响应类型
     private static MimetypesFileTypeMap mime = new MimetypesFileTypeMap();
 
     private Socket socket;
@@ -124,8 +125,10 @@ public class HttpServletResponse {
         return contentFile;
     }
 
+//   该方法处理Content-Type类型响应正确的MINE类型,使服务器正确响应浏览器请求的资源
     public void setContentFile(File contentFile) {
         this.contentFile = contentFile;
+        //在设置正文文件时添加两个响应头
         addHeader("Content-Type",mime.getContentType(contentFile));
         addHeader("Content-Length",contentFile.length()+"");
     }

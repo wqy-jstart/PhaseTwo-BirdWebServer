@@ -46,7 +46,6 @@ public class DispatcherServlet {
             System.out.println("该文件存在！");
             response.setContentFile(file);//响应抽象路径下项目存在的HTML文件
 
-
             response.addHeader("Server","BirdWebServer");
 
         }else {

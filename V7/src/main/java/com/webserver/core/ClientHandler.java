@@ -51,13 +51,13 @@ public class ClientHandler implements Runnable{
             //根据用户提供的抽象路径去static目录下定位到一个文件
             if(file.isFile()) {//file.isFile()表示存在并且是一个文件
                 System.out.println("该文件存在！");
-               response.setContentFile(file);
+               response.setContentFile(file);/*设置用户请求的文件*/
             }else {
                 System.out.println("文件不存在！");
                 response.setStatusCode(404);/*设置响应状态行信息*/
                 response.setStatusReason("NotFound");
                 file = new File(staticDir, "root/404.html");
-                response.setContentFile(file);/*设置响应正文的内容文件*/
+                response.setContentFile(file);/*设置用户请求的文件*/
             }
 
 //           3:发送响应(将处理结果回馈给浏览器)

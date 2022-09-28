@@ -30,7 +30,7 @@ public class HttpServletResponse {
     private Map<String,String> headers = new HashMap<>();
 
 //3:  响应正文相关信息：
-    private File contentFile;//响应正文对应的实体文件
+    private File contentFile;//设置用户请求的文件
 
 
     public HttpServletResponse(Socket socket){
