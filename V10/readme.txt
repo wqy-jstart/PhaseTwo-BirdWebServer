@@ -2,6 +2,7 @@
 这里我们使用java.nio.file.Files这个类来完成这个功能。
 
 这样一来，服务端就可以正确响应浏览器请求的任何资源了，使得浏览器可以正确显示内容
+★先在resources与static资源文件同级目录下创建META-INF,并添加文件mime.types
 
 实现:
 1:将原DispatcherServlet中设置响应头Content-Type和Content-Length的
