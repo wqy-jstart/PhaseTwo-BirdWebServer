@@ -9,7 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.URISyntaxException;
-
+//处理用户注册
 public class UserController {
     private static File userDir;//用来表示存放所有用户信息的目录
     static {
@@ -64,7 +64,7 @@ public class UserController {
             response.setContentFile(file1);
             return;
         }
-        try(
+        try( //将对象序列化到文件中
                 FileOutputStream fos = new FileOutputStream(file);
                 ObjectOutputStream oos = new ObjectOutputStream(fos)
             ) {

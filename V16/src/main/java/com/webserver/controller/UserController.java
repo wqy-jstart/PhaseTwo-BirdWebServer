@@ -88,7 +88,7 @@ public class UserController {
                 e.printStackTrace();//处理异常
             }
         }
-        //登录失败
+        //若文件不存在
         response.sendRedirect("/login_fail.html");//若登录失败,则响应该页面
     }
 }

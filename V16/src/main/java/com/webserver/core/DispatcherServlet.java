@@ -42,6 +42,7 @@ public class DispatcherServlet {
         String path = request.getRequestURI();//将获得的抽象路径赋给path
         //首先判断是否为请求某个特定的业务
         if ("/regUser".equals(path)) {
+            //若为true则执行UserController中的方法进行处理
             UserController controller = new UserController();
             controller.reg(request, response);
         }else if("/loginUser".equals(path)) {

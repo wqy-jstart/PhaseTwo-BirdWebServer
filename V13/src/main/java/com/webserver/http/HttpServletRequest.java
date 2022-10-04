@@ -159,6 +159,7 @@ public class HttpServletRequest {
         return queryString;
     }
 
+    //方便调用时返回传入表单name的值
     public String getParameters(String name) {
         return parameters.get(name);
     }
