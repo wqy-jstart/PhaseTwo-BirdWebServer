@@ -12,7 +12,7 @@ public class Singleton {
     private static Singleton instance = new Singleton();
 
     private Singleton(){}//私有化构造器
-    //getInstance()该静态方法负责返回一个对象(正常情况调多少返回多少不同的对象)
+    //getInstance()该静态方法负责返回一个对象(正常情况调多少返回多少不同对象,但是若为单例模式,只能有一个对象)
     public static Singleton getInstance(){
         return instance;
     }
