@@ -47,12 +47,13 @@ public class UserController {
             Statement statement = connection.createStatement();
             //查1代表如果WHERE条件成立就能显示1,反之不显示,可以用来判断WHERE条件是否成立
             String sql = "SELECT 1 FROM userinfo WHERE username='"+username+"'";
-            ResultSet rs = statement.executeQuery(sql);
+            ResultSet rs = statement.executeQuery(sql);//返回查询的结果集
             //如果WHERE条件成立说明此次用户名和上一次相同,可查到数字1,next()方法为true
-            while (rs.next()){ //★判断结果集是否有一条记录
+            while (rs.next()){ //★判断结果集是否有一条记录(判断是否用户名存在)
                 response.sendRedirect("/have_user.html");
                 return;
             }
+            //插入到userinfo表中
             /*
                INSERT INTO userinfo (username,password,nickname,age)
                VALUES('xx','xx','xx',2)
@@ -85,7 +86,7 @@ public class UserController {
         }
         try(
                 Connection connection = DBUtil.getConnection()
-        ) {
+        ) {//利用JDBC查询数据库
             String sql = "SELECT id,username,password,nickname,age " +
                          "FROM userinfo " +
                          "WHERE username=? " +
@@ -94,9 +95,9 @@ public class UserController {
             pr.setString(1,username);
             pr.setString(2,password);
             ResultSet rs = pr.executeQuery();
-            if (rs.next()) {
+            if (rs.next()) {//若查询到一条数据
                 response.sendRedirect("/login_success.html");
-            } else {
+            } else {//否则没有查到数据说明没有该用户,登录失败
                 //登录失败
                 response.sendRedirect("/login_fail.html");//若登录失败,则响应该页面
             }

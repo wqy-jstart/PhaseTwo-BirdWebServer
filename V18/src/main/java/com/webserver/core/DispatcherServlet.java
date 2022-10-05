@@ -44,7 +44,7 @@ public class DispatcherServlet {
 
     //★该方法用来请求抽象路径和判断文件是否属于该项目下,并作出不同的响应页面
     public void service(HttpServletRequest request, HttpServletResponse response) {
-        String path = request.getRequestURI();//将获得的抽象路径赋给path
+        String path = request.getRequestURL();//将获得的抽象路径赋给path
         //是否为处理业务
         try {
             Method method = HandlerMapping.getMethod(path);//传入抽象路径获取方法

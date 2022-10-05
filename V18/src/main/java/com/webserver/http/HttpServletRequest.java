@@ -24,7 +24,7 @@ public class HttpServletRequest {
     private String uri;//抽象路径
     private String protocol;//协议版本
 
-    private String requestURI;//uri中的请求部分,即:"?"左侧内容
+    private String requestURL;//uri中的请求部分,即:"?"左侧内容
     private String queryString;//uri中的参数部分,即:"?"右侧内容
     private Map<String,String> parameters = new HashMap<>();//定义一个散列表存放键值对(每一组参数)
 
@@ -54,7 +54,7 @@ public class HttpServletRequest {
         uri = data[1];//获取元素2,赋值给抽象路径
         protocol = data[2];//获取元素3,赋值给协议版本
         //进一步解析uri
-        parseURI();//调用解析uri的方法
+        parseURL();//调用解析uri的方法
         //打桩输出
         System.out.println("method:" + method);
         System.out.println("uri:" + uri);
@@ -62,7 +62,7 @@ public class HttpServletRequest {
 
     }
     //进一步解析uri
-    private void parseURI(){
+    private void parseURL(){
          /*
             uri有两种情况:
             1:不含有参数的
@@ -76,7 +76,7 @@ public class HttpServletRequest {
               并将参数名作为key，参数值作为value存入到parameters中。
          */
         String[] data = uri.split("\\?");//转成普通的问号
-        requestURI = data[0];
+        requestURL = data[0];
         if (data.length>1){ //数组长度>1说明"?"后面有参数
             queryString = data[1];
             //对参数部分进行转码
@@ -94,7 +94,7 @@ public class HttpServletRequest {
 //          }
             }
         }
-        System.out.println("requestURI:"+requestURI);
+        System.out.println("requestURI:"+requestURL);
         System.out.println("queryString:"+queryString);
         System.out.println("parameters:"+parameters);
     }
@@ -159,8 +159,8 @@ public class HttpServletRequest {
         return headers.get(name);
     }
 
-    public String getRequestURI() {
-        return requestURI;
+    public String getRequestURL() {
+        return requestURL;
     }
 
     public String getQueryString() {
