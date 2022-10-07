@@ -1,4 +1,4 @@
-重构
+重构请求部分代码
 进行功能个拆分,将ClientHandler中第一个环节解析请求的细节拆分出去,使得
 ClientHandler仅关心处理一次HTTP交互的流程控制.
 

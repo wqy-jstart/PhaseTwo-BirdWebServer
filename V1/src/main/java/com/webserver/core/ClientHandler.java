@@ -13,9 +13,9 @@ import java.net.Socket;
  * 3:发送响应(将处理结果回馈给浏览器)
  * 断开连接
  */
-public class ClientHandler implements Runnable{
+public class ClientHandler implements Runnable {
     //Socket封装了TCP协议的通讯细节,使用它就可以和远端计算机建立TCP连接,并基于
-    //两条流(一个输出一个输入流)与远端计算机交互数据
+    //两条流(输出和输入)与远端计算机交互数据
     private Socket socket;
     public ClientHandler(Socket socket){
         this.socket=socket;
@@ -26,8 +26,8 @@ public class ClientHandler implements Runnable{
         try {
             InputStream in = socket.getInputStream();//通过socket获取输入流
             int d;//接收read()方法返回读取1个字节二进制低八位内容(一次读一个)
-            while ((d = in.read()) != -1){//当为-1时说明字节读取到末尾
-                System.out.print((char)d);//
+            while ((d = in.read()) !=-1){//当为-1时说明流读取到了末尾
+                System.out.print((char) d);//此处取消自动换行功能
             }
         } catch (IOException e) {
             e.printStackTrace();
