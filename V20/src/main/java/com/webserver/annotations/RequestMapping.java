@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 用来标注某个Controller中处理某个请求的方法
+ * 用来标注某个Controller中处理某个请求的方法------SpringMVC提供的
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

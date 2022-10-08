@@ -56,8 +56,6 @@ public class DispatcherServlet {
             response.setStatusReason("NotFound");
             file = new File(staticDir, "root/404.html");//并将响应的内容改为404.html,使得服务器响应404页面
             response.setContentFile(file);//将请求的文件设置为404.html
-            response.addHeader("Content-Type","text/html");
-            response.addHeader("Content-Length",file.length()+"");//因传入的是字符串,length()返回int型,故使用空字符串同化
         }
     }
 }
