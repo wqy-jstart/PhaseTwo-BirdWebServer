@@ -15,7 +15,7 @@
 实现:
 重构HttpServletRequest的解析工作，添加对表单数据的解析。
 1:定义三个新的属性:String requestURI,String queryString,Map parameters
-  分别保存抽象路径中的请求部分,参数部分和每一组参数
+  分别保存抽象路径中的请求部分,参数部分和每一组参数,并且提供get方法
 2:定义parseUri方法,进一步解析抽象路径中包含的参数内容
 3:在解析请求的方法中解析出三部分后调用parseUri进一步解析uri
 
