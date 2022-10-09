@@ -55,7 +55,7 @@ public class UserController {
         ) {
             //当信息输入有误时提示该页面
             File file = new File(staticDir,"/reg_info_error.html");
-            response.setContentFile(file);//调用HttpServletResponse类中设置正文文件的方法,设置并响应该文件
+            response.setContentFile(file);//调用HttpServletResponse类中设置正文文件的方法,设置并响应该输入有误的HTML文件
             return;
         }
         //信息输入正确时输出

@@ -48,10 +48,10 @@ public class DispatcherServlet {
         //首先判断是否为请求某个特定的业务
         if ("/regUser".equals(path)) { //判断获取的抽象路径属性值与?reUser(处理业务的路径)是否相同
             UserController controller = new UserController();//实例化UserController
-            controller.reg(request, response);//调用该处理业务的方法,传入两个实例
-        } else { //若不是处理业务的抽象路径,则走下面步骤
+            controller.reg(request, response);//调用该处理业务的方法,传入两个实例的引用
+        } else { //若不是处理业务的抽象路径,则判断文件是否存在,并利用response设置对应正文类型和正文长度,添加响应头
             //定位static目录下的HTML文件
-            File file = new File(staticDir, path);//path为用户输入项目对应的HTML文件
+            File file = new File(staticDir, path);//path为用户输入的抽象路径,即项目对应的HTML文件
             //根据用户提供的抽象路径去static目录下定位到一个文件
             if (file.isFile()) {//file.isFile()表示存在并且是一个文件
                 System.out.println("该文件存在!");

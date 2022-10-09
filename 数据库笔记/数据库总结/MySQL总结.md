@@ -50,6 +50,46 @@
 
 ### DCL(数据控制语言)
 
+## (5).数据库SQL基础:
+
+- #### 查看有多少个数据库(固定)
+
+  ```mysql
+  SHOW DATABASES;
+  ```
+
+![image-20221009110739052](images/image-20221009110739052.png)
+
+- #### 使用某一个数据库
+
+  ```mysql
+  USE mydb;
+  ```
+
+- #### 查看某一张表的结构
+
+  ```mysql
+  DESC userinfo;
+  ```
+
+![image-20221009111024894](images/image-20221009111024894.png)
+
+- #### 查看创建后某一张表的详细信息
+
+  ```mysql
+  SHOW CREATE TABLE userinfo;
+  ```
+
+![image-20221009111121830](images/image-20221009111121830.png)
+
+- #### 查看当前数据库创建的所有表(固定)
+
+  ```mysql
+  SHOW TABLES;
+  ```
+
+![image-20221009111209238](images/image-20221009111209238.png)
+
 # 二. 表相关的操作
 
 ### DDL语句:数据定义语言,用来操作数据库对象的.
@@ -677,7 +717,7 @@ LEFT JOIN dept d
 ON e.dept_id = d.id;
 ```
 
-![img_4](img_4.png)
+![img_4](images/img_4.png)
 
 ### b.右外连接演示(RIGHT JOIN)
 
@@ -688,7 +728,7 @@ RIGHT JOIN dept d
 ON e.dept_id = d.id;
 ```
 
-![img_5](img_5.png)
+![img_5](images/img_5.png)
 
 ## ★使用UNION关键字将左右连接并在一起(取并集)
 
@@ -708,7 +748,7 @@ RIGHT JOIN dept d
 ON e.dept_id = d.id;
 ```
 
-![img_6](img_6.png)
+![img_6](images/img_6.png)
 
 ## 例：查看比所在地区平均工资高的员工？
 
@@ -731,7 +771,7 @@ GROUP BY d.loc;
 
 ### 第三步.关联三张表查询:员工表-部门表-(第2步子查询的结果集当成的表)
 
-![img.png](img.png)
+![img.png](images/img.png)
 
 ### 查询emp表数据
 
@@ -771,7 +811,7 @@ WHERE e.sal>a.avg_sal #过滤条件
 ORDER BY dept_id; #按照部门ID排序,使结果清晰！
 ```
 
-![img_3](img_3.png)
+![img_3](images/img_3.png)
 
 ## 21.自连接
 
@@ -1023,11 +1063,11 @@ try(
 
 #### (1).Statement每次执行SQL语句时，都会将该SQL语句发送给数据库，而数据库接收到SQL语句后会解析SQL语句并生成执行计划(该操作是一个耗时的操作)。然后再执行该计划。当SQL语义相同，但是数据不同时，如果我们执行这些SQL，那么每次数据库接收SQL都要生成执行计划。
 
-![img_7](img_7.png)
+![img_7](images/img_7.png)
 
 #### (2).PreparedStatement会在创建时先将预编译SQL语句发送给数据库来生成执行计划(仅1次)，并且"?"内容会在生成的执行计划中当作"参数".在多次执行时，每次仅需要将"?"对应的数据发送给数据库，来重用预编译SQL对应的执行计划，这样效率会高很多。
 
-![img_2](img_2.png)
+![img_2](images/img_2.png)
 
 #### Statement执行SQL语句时，数据是需要拼接SQL来完成，这存在SQL注入攻击，但是PreparedStatement会先将预编译SQL发送给数据库生成执行计划，那么所有数据都会被当作参数。因此就算传入的是注入攻击的内容，它也仅会当这部分内容为参数值，语义已经不会发生改变了(因为执行计划已经生成。)
 
