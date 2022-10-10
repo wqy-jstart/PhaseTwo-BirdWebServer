@@ -4,7 +4,7 @@ package com.webserver.http;
  * 空请求异常
  * 当HttpServerRequest在解析请求时发现本次为空请求时会抛出这个异常
  */
-public class EmptyRequestException extends Exception {
+public class EmptyRequestException extends Exception{
     public EmptyRequestException() {
     }
 
