@@ -3,6 +3,7 @@ package com.webserver.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,7 +85,7 @@ public class HttpServletRequest {//面向对象思想,做到实例化该类即�
         if (data.length>1){ //判断,如果字符串输出的长度>1,说明?后面有参,则进行下一步处理参数
             queryString = data[1];
             data = queryString.split("&");//根据含参uri中?右边参数特点,每组参数被"&"隔开,则使用&拆分,返回存放每组参数的字符串数组
-            System.out.println("拆分后为:"+data);
+            System.out.println("URI拆分后为:"+ Arrays.toString(data));
             for (String para : data){//遍历按"&"拆分后的每一组参数
                 String[] arr = para.split("=",2);//将每一组参数按照"="拆分成两项
                 parameters.put(arr[0],arr[1]);//将拆分后的两部分put到Map中(key,value)

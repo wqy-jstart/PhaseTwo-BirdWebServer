@@ -26,16 +26,16 @@ public class HttpServletResponse {
     private int statusCode = 200;//状态代码
     private String statusReason = "OK";//状态描述
 
-//  存放响应头相关信息：为正确设定响应类型Type,使资源正常加载
+    //  存放响应头相关信息：为正确设定响应类型Type,使资源正常加载
     //创建一个Map散列表，它存储的内容是键值对(key-value)映射。
     //设置正确的响应类型可使浏览器正确理解和加载资源文件
-    private Map<String,String> headers = new HashMap<>();
+    private Map<String, String> headers = new HashMap<>();
 
     //响应正文相关信息
     private File contentFile;//设置用户请求的文件(两种情况,请求成功和失败的文件)
 
-    public HttpServletResponse(Socket socket){
-        this.socket=socket;
+    public HttpServletResponse(Socket socket) {
+        this.socket = socket;
     }
 
     /**
@@ -53,14 +53,14 @@ public class HttpServletResponse {
 
     //发送状态行
     private void sendStatusLine() throws IOException {
-        println("HTTP/1.1"+" "+statusCode+" "+statusReason);//将状态行利用以上判断得到的变量来表示(注意空格)
+        println("HTTP/1.1" + " " + statusCode + " " + statusReason);//将状态行利用以上判断得到的变量来表示(注意空格)
     }
 
     //发送响应头
     private void sendHeaders() throws IOException {
         //遍历headers散列表来发送每一个响应头
-        Set<Map.Entry<String,String>> entrySet = headers.entrySet();//遍历Map的写法
-        for (Map.Entry<String,String> e : entrySet){
+        Set<Map.Entry<String, String>> entrySet = headers.entrySet();//遍历Map的写法
+        for (Map.Entry<String, String> e : entrySet) {
             //获取键值对的值并输出
             String key = e.getKey();
             String value = e.getValue();
@@ -70,7 +70,7 @@ public class HttpServletResponse {
              * Server: BirdWebServer
              * 当做字符串传入println方法中写到客户端中
              */
-            println(key+": "+value);
+            println(key + ": " + value);
         }
         //单独发送回车+换行表达响应头发送完毕
         println("");//调用方法传入空字符串,执行方法中后两个写入方法,即回车+换行
@@ -79,19 +79,22 @@ public class HttpServletResponse {
     //发送响应正文
     private void sendContent() throws IOException {
         OutputStream out = socket.getOutputStream();//通过socket获取文件输出流向浏览器页面写内容(服务器写出->浏览器)
-        try(
-                FileInputStream fis = new FileInputStream(contentFile)//创建输入流读取需要响应的HTML文件(服务器读取->HTML文件)
-        ){
-            byte[] data = new byte[1024*10];//块读
-            int len;//表示一次读取的量
-            while ((len = fis.read(data)) != -1){
-                out.write(data,0,len);//将读取的HTML文件写入浏览器页面
+        if (contentFile != null) {//如果正文文件不为空时才发送内容
+            try (
+                    FileInputStream fis = new FileInputStream(contentFile)//创建输入流读取需要响应的HTML文件(服务器读取->HTML文件)
+            ) {
+                byte[] data = new byte[1024 * 10];//块读
+                int len;//表示一次读取的量
+                while ((len = fis.read(data)) != -1) {
+                    out.write(data, 0, len);//将读取的HTML文件写入浏览器页面
+                }
             }
         }
     }
 
     /**
      * 该方法用来利用socket获取的输出流向服务器中写出状态行,响应头,正文长度
+     *
      * @param line
      * @throws IOException
      */
@@ -102,6 +105,7 @@ public class HttpServletResponse {
         out.write(13);//回车符
         out.write(10);//换行符
     }
+
     public int getStatusCode() {
         return statusCode;
     }
@@ -126,6 +130,7 @@ public class HttpServletResponse {
      * 因为用户请求的结果有两种,成功或失败,
      * ★故提供set方法让外界根据用户请求的结果来设置不同的正文文件contentFile
      * getContentType(File file),该方法通过传入一个文件,自动返回相应的正确类型,例如图片/img...
+     *
      * @param contentFile
      */
     public void setContentFile(File contentFile) {
@@ -133,24 +138,26 @@ public class HttpServletResponse {
         //因为只要包含正文就应当包含说明正文信息的两个头Content-Type和Content-Length.
         //因此我们完全可以在设置正文的时候自动设置这两个头.
         //调用addHeader传入存放所需要发送的响应头(响应类型:? 响应长度:? ...)
-        addHeader("Content-Type",mime.getContentType(contentFile));//设置正确的响应类型可使浏览器正确理解和加载资源文件
-        addHeader("Content-Length",contentFile.length()+"");//因传入的是字符串,length()返回int型,故使用空字符串同化
+        addHeader("Content-Type", mime.getContentType(contentFile));//设置正确的响应类型可使浏览器正确理解和加载资源文件
+        addHeader("Content-Length", contentFile.length() + "");//因传入的是字符串,length()返回int型,故使用空字符串同化
     }
 
     /**
      * 该方法用来接收需要发送的响应头,将要发送的响应头存入headers中最后发送给客户端
-     * @param name 响应头的名字
+     *
+     * @param name  响应头的名字
      * @param value 响应头的值
      */
-    public void addHeader(String name,String value){
-        headers.put(name,value);
+    public void addHeader(String name, String value) {
+        headers.put(name, value);
     }
 
     /**
      * 该方法实现页面重定向到指定路径,避免表单反复的提交
+     *
      * @param location
      */
-    public void sendRedirect(String location){
+    public void sendRedirect(String location) {
         /*
            重定向的响应要求：
            1:状态代码为302
@@ -159,6 +166,6 @@ public class HttpServletResponse {
         statusCode = 302;//状态代码
         statusReason = "Moved Temporarily";
 
-        addHeader("Location",location);
+        addHeader("Location", location);
     }
 }
