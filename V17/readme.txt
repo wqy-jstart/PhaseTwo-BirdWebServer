@@ -10,4 +10,3 @@
   并将里面用于处理某个业务的方法标注@RequestMapping并指定该方法处理的请求
 4:DispatcherServlet在处理请求时,先扫描controller包下的所有Controller类
   并找到处理该请求的业务方法,使用反射调用.
-5:读取正文时判断正文是否为null,若为null就不进行读取,反之读取

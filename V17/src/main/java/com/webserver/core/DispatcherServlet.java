@@ -2,6 +2,7 @@ package com.webserver.core;
 
 import com.webserver.annotations.Controller;
 import com.webserver.annotations.RequestMapping;
+import com.webserver.controller.UserController;
 import com.webserver.http.HttpServletRequest;
 import com.webserver.http.HttpServletResponse;
 
@@ -11,24 +12,24 @@ import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 
 /**
- * 这个类时SpringMVC框架与tomcat容器整合的一个关键类,接管了处理请求的工作.
+ * 这个类是SpringMVC框架与tomcat容器整合的一个关键类,接管了处理请求的工作.
  * 这样当tomcat将请求对象和响应对象创建完毕后在处理请求的环节通过调用这个类来完成,从而
  * 将处理请求交给了SpringMVC框架
  * 并在处理后发送响应给浏览器
  */
 public class DispatcherServlet {
-    private static DispatcherServlet instance = new DispatcherServlet();
+    private static DispatcherServlet instance = new DispatcherServlet();//私有创建一个静态的对象(单例模式)
     private static File rootDir;//声明类加载路径
     private static File staticDir;//声明类加载路径下的static静态资源目录
 
     static {
         try {
-            //rootDir表示类加载路径:target/classes目录
+            //定位rootDir表示类加载路径:target/classes目录
             rootDir = new File(
-                    DispatcherServlet.class.getClassLoader()
+                    ClientHandler.class.getClassLoader()
                             .getResource(".").toURI()
             );
-            //定位rootDir父目录下的static目录(static目录下存放的是所有静态资源)
+            //定位static目录(static目录下存放的是所有静态资源)
             staticDir = new File(rootDir, "static");
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -38,14 +39,16 @@ public class DispatcherServlet {
     private DispatcherServlet() {
     }
 
+    //getInstance()该方法正常用来返回一个对象名
     public static DispatcherServlet getInstance() {
         return instance;//只返回一种该对象
     }
 
     //★该方法用来请求抽象路径和判断文件是否属于该项目下,并作出不同的响应页面
-    public void service(HttpServletRequest request, HttpServletResponse response) {
-        String path = request.getRequestURI();//将获得的抽象路径赋给path
-        //path:/regUser
+    public void service(HttpServletRequest request, HttpServletResponse response) {//传入两个实例用来根据不同请求结果来设置响应内容
+        //利用getRequestURI()方法获取request中的抽象路径(有参无参不影响该路径)并赋给path(该抽象路径是用户输入包含于请求行中的)
+        //例如:请求行内容: GET /regUser?..... HTTP/1.1
+        String path = request.getRequestURI();
         //首先判断是否为请求某个特定的业务
         /*
             当我们得到本次请求路径path的值后，我们首先要查看是否为请求业务:
@@ -60,26 +63,26 @@ public class DispatcherServlet {
               则说明本次请求并非处理业务，那么执行下面请求静态资源的操作
          */
         try {
-            File dir = new File(rootDir, "com/webserver/controller");
-            File[] subs = dir.listFiles(f -> f.getName().endsWith(".class"));
-            for (File sub : subs) {
-                String fileName = sub.getName();
-                String className = fileName.substring(0, fileName.lastIndexOf("."));
-                Class cls = Class.forName("com.webserver.controller." + className);
+            File dir = new File(rootDir,"com/webserver/controller");//定位类加载路径下的controller包
+            File[] subs = dir.listFiles(f->f.getName().endsWith(".class"));//将.class文件放到文件数组中
+            for (File sub : subs){ //增强for循环遍历.class文件数组
+                String fileName = sub.getName();//获取文件名
+                String className = fileName.substring(0,fileName.lastIndexOf("."));//截取从头到"."的部分(不含.)
+                Class cls = Class.forName("com.webserver.controller."+className);//传入完全限定名
                 //查看是否被注解Controller标注了
-                if (cls.isAnnotationPresent(Controller.class)) {
+                if (cls.isAnnotationPresent(Controller.class)){
                     //扫描所有方法,查看是否为处理本次请求的方法
-                    Method[] methods = cls.getDeclaredMethods();
-                    for (Method method : methods) {
+                    Method[] methods = cls.getDeclaredMethods();//利用加载该类的引用获取类中的所有方法(包括私有)
+                    for (Method method : methods){
                         //判断是否被注解@RequestMapping标注了
-                        if (method.isAnnotationPresent(RequestMapping.class)) {
+                        if (method.isAnnotationPresent(RequestMapping.class)){
                             RequestMapping rm = method.getAnnotation(RequestMapping.class);
                             //获取@RequestMapping注解的参数值
                             String value = rm.value();
-                            //若本次请求路径和@RequestMapping注解参数值一样这说明
-                            if (path.equals(value)) {
-                                Object controller = cls.newInstance();//实例化对象
-                                method.invoke(controller, request, response);//调用方法,先传入对象的引用,之后传递方法参数
+                            //若本次请求路径和@RequestMapping注解参数值一样说明是处理业务的方法
+                            if (path.equals(value)){
+                                Object controller = cls.newInstance();//实例化类对象
+                                method.invoke(controller,request,response);//调用方法,先传入该方法类对象的引用,之后传递方法参数
                                 return;
                             }
                         }
@@ -99,18 +102,19 @@ public class DispatcherServlet {
 
 
         //定位static目录下的HTML文件
-        File file = new File(staticDir, path);//path为项目中的HTML文件
-        //根据用户提供的抽象路径去static目录下定位到一个文件
-        if (file.isFile()) {//file.isFile()表示存在并且是一个文件
-            System.out.println("是一个普通文件！");
-            response.setContentFile(file);//响应抽象路径下项目存在的HTML文件
-            response.addHeader("Server", "BirdWebServer");
-        } else {
-            System.out.println("该文件不存在！");
-            response.setStatusCode(404);
-            response.setStatusReason("NotFound");
-            file = new File(staticDir, "root/404.html");
-            response.setContentFile(file);//响应项目中指定的404(HTML页面)
+            File file = new File(staticDir, path);//path为用户输入的抽象路径,即项目对应的HTML文件
+            //根据用户提供的抽象路径去static目录下定位到一个文件
+            if (file.isFile()) {//file.isFile()表示存在并且是一个文件
+                System.out.println("该文件存在!");
+                response.setContentFile(file);//设置用户成功请求的文件
+                response.addHeader("Server", "BirdWebServer");
+            } else {
+                System.out.println("文件不存在!");
+                response.setStatusCode(404);
+                response.setStatusReason("NotFound");
+                file = new File(staticDir, "root/404.html");//并将响应的内容改为404.html,使得服务器响应404页面
+                response.setContentFile(file);//将请求的文件设置为404.html
+
         }
     }
 }

@@ -1,6 +1,6 @@
 重构代码
 上一个版本那种DispatcherServlet每次处理请求时都要扫描controller包,这样性能
-底下.因此改为仅扫描一次.
+低下.因此改为仅扫描一次.
 
 实现:
 1:在com.webserver.core包下新建类HandlerMapping
