@@ -9,6 +9,6 @@ import com.webserver.http.HttpServletResponse;
 public class ArticleController {
     @RequestMapping("/writeArticle")
     public void write(HttpServletRequest request, HttpServletResponse response){
-        System.out.println("开始处理发表文章功能！！！！");
+        System.out.println("开始处理发表文章功能!!!!");
     }
 }
