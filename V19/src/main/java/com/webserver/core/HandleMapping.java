@@ -5,13 +5,14 @@ import com.webserver.annotations.RequestMapping;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * 该类用于维护请求路径与业务处理方法的对应关系
  */
-public class HandlerMapping {
+public class HandleMapping {
     /**
      * key:请求路径
      * value:处理该请求的方法
@@ -27,7 +28,7 @@ public class HandlerMapping {
     private static void initMapping(){
         try {
             File rootDir = new File(
-                    HandlerMapping.class.getClassLoader().getResource(".").toURI()
+                    HandleMapping.class.getClassLoader().getResource(".").toURI()
             );
             File dir = new File(rootDir,"com/webserver/controller");//定位类加载路径下的controller包
             if (dir.exists()){//确保controller目录存在

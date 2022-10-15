@@ -22,15 +22,15 @@ public class DBUtil {
     }
 
     /**
-     * 获取一个数据库连接
-     * @return
+     * 该方法用户获取数据库连接
+     * @return 返回获取连接的方法
      * @throws SQLException
      */
     public static Connection getConnection() throws SQLException {
-        /*
+         /*
            连接池返回的连接是在实际数据库驱动提供的连接对象上包装了一层连接池自己提供的连接对象,这个
             连接对象的close方法并不是真的断开连接，而是将当前连接归还到连接池中。
          */
-        return dds.getConnection();//直接调用该方法获取连接
+        return dds.getConnection();//直接调用DruidDataSource实例的方法获取连接
     }
 }

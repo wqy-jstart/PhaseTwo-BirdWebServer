@@ -47,7 +47,7 @@ public class DispatcherServlet {
         String path = request.getRequestURI();
         //首先判断是否为请求某个特定的业务
         try {
-            Method method = HandleMapping.getMethod(path);//调用HandleMapping实例中的getMethod()方法,传入抽象路径path
+            Method method = HandlerMapping.getMethod(path);//调用HandleMapping实例中的getMethod()方法,传入抽象路径path
             if (method != null) {//判断该方法是否为空NULL
                 //★通过该方法获取其所属类的类对象
                 Class cls = method.getDeclaringClass();
