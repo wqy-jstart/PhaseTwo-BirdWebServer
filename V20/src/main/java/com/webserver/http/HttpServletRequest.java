@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -68,7 +69,7 @@ public class HttpServletRequest {//面向对象思想,做到实例化该类即�
     }
 
     /**
-     * 该方法用来进一步解析uri
+     * 该方法用来进一步解析请求行中的uri
      */
     private void parseURI(){
         /*
@@ -92,11 +93,11 @@ public class HttpServletRequest {//面向对象思想,做到实例化该类即�
         //打桩输出uri中参数的对应值
         System.out.println("requestURI:"+requestURI);
         System.out.println("queryString:"+queryString);
-        System.out.println("parameters:"+parameters);
+        System.out.println("parameters:"+parameters);//输出进一步解析uri的Map
     }
 
     /**
-     * 解析参数。参数可能来自于抽象路径uri中或正文中
+     * 解析参数。参数可能来自于抽象路径urL中或者正文中(也起到重用的效果)
      * @param line 字符串格式应当是name=value&name=value&...
      */
     private void parseParameters(String line){//返回值为void,将内容转码后拆分放入parameters里
@@ -139,7 +140,7 @@ public class HttpServletRequest {//面向对象思想,做到实例化该类即�
     }
 
     /**
-     * 该方法用来解析正文
+     * 该方法用来解析消息正文(用户使用Post请求时会有需要解析的消息正文)
      * @throws IOException
      */
     private void parseContent() throws IOException {
@@ -155,10 +156,10 @@ public class HttpServletRequest {//面向对象思想,做到实例化该类即�
 
                 //获取消息头Content-Type
                 String contentType = headers.get("Content-Type");
-                //判断正文类型进行不同处理
+                //判断正文类型进行不同处理(若正文类型有该种情况,说明用户提交了表单数据,并不含附件)
                 if ("application/x-www-form-urlencoded".equals(contentType)){
                     //表单数据,不含附件的。格式是一个字符串,就是原GET请求中在抽象路径"?"右侧内容
-                    String line = new String(data, StandardCharsets.ISO_8859_1);
+                    String line = new String(data, StandardCharsets.ISO_8859_1);//将读取的内容按照ISO_8859_1的字符集转给line
                     System.out.println("正文内容："+line);
                     parseParameters(line);//将正文内容进行转码拆分
                 }

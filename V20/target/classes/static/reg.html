@@ -43,19 +43,17 @@
       参数名1=参数值1&参数名2=参数值2&...
       参数名是表单中某个输入框name属性指定的值
       参数值是表单中该输入框用户在其中输入的内容
-
-      post
    -->
   <form action="/regUser" method="post"> <!-- 表单 action为表单提交地 -->
   <br>
     <table border="1">
     <tr> <!--第一行 -->
       <td>用户名</td>
-      <td><input name="username" type="text" ></td>
+      <td><input name="username" type="text" required="required"></td>
     </tr>
     <tr> <!-- 第二行 -->
       <td>密码</td>
-      <td><input name="password" type="password"> </td>
+      <td><input name="password" type="password" required="required"></td>
     </tr>
     <tr> <!-- 第三行 -->
       <td>昵称</td>

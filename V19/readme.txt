@@ -4,6 +4,11 @@ POST会将表单数据包含在请求的消息正文中。
 如果表单中没有附件，则正文中包含的表单数据就是一个字符串，而格式就是原GET形式
 提交时抽象路径中"?"右侧的内容。
 
+★总的来说就是利用Post请求上传的信息不会直接出现在请求路径上,而是隐藏在消息正文的Content-Type中,例如:
+消息头: Content-Length: 77--------正文长度即用户提交的信息长度
+消息头: Content-Type: application/x-www-form-urlencoded-----这里含有用户提交的形式和内容(隐藏了)
+为了保护用户的隐私
+
 实现:
 1:完成HttpServletRequest中的解析消息正文的方法
   当页面(reg.html或login.html)中form的提交方式改为POST时，表单数据被包含在正文里，并且
