@@ -1149,6 +1149,122 @@ WHERE e.dept_id = d.id
 AND d.loc = a.loc
 AND e.sal>a.avg_sal
 
+内连接写法
+SELECT e.name,e.sal,a.avg_sal,d.loc
+FROM emp e
+JOIN dept d
+ON e.dept_id = d.id
+JOIN (SELECT AVG(e.sal) avg_sal,d.loc
+                   FROM emp e,dept d
+                   WHERE e.dept_id=d.id
+                   GROUP BY d.loc) a
+ON d.loc = a.loc
+WHERE
+e.sal>a.avg_sal
+
+# 查看每个地区的最高工资是谁?
+SELECT e.name,e.sal,a.max_sal,d.loc
+FROM emp e
+         JOIN dept d
+              ON e.dept_id = d.id
+         JOIN (SELECT MAX(e.sal) max_sal,d.loc
+               FROM emp e,dept d
+               WHERE e.dept_id=d.id
+               GROUP BY d.loc) a
+              ON d.loc = a.loc
+WHERE e.sal=a.max_sal
+
+
+自连接
+该表中的一条记录可以对应该表中的其他多条记录时，就是自连接的关联关系。
+
+自连接的设计是为了保存同样一组属性的数据之间有存在上下级关系时(树状结构数据)
+公司的员工组织结构，对于公司而言大家都属于员工，但是员工之间又存在上下级关系。
+电商中常见的分类树。
+
+自连接:当前表的一个字段保存了当前表中的主键字段值
+
+查看每个员工和他的领导是谁?
+SELECT e.name,m.name
+FROM emp e,emp m
+WHERE e.manager=m.id
+
+内连接写法:
+SELECT e.name,m.name
+FROM emp e
+JOIN emp m
+ON e.manager=m.id
+
+刘备的手下都有谁?
+SELECT e.name
+FROM emp e
+JOIN emp m
+ON e.manager=m.id
+WHERE m.name='刘备'
+
+谁的工资高于孙悟空的领导工资?
+1:孙悟空的领导工资?
+SELECT m.name,m.sal
+FROM emp e
+JOIN emp m
+ON e.manager=m.id
+WHERE e.name='孙悟空'
+
+2:查看谁的工资高于唐僧的?
+SELECT name,sal
+FROM emp
+WHERE sal > (SELECT m.sal
+            FROM emp e
+            JOIN emp m
+            ON e.manager=m.id
+            WHERE e.name='孙悟空')
+
+CREATE TABLE userinfo(
+    id INT primary key auto_increment,
+    username VARCHAR(30) NOT NULL ,
+    password VARCHAR(30),
+    age INT(3),
+    salary DOUBLE(7,2)
+)
+
+SELECT id,name,age,class_id
+FROM student
+WHERE age=6
+
+# 新建数据库
+# bbsdb
+
+# 创建表userinfo
+# 字段(id,username,password,age)
+
+# 创建表article
+# 字段(id,title(300),content(3000),u_id)
+
+CREATE DATABASE bbsdb;
+use bbsdb;
+
+CREATE TABLE userinfo(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(30),
+    password VARCHAR(30),
+    age INT(3)
+);
+
+CREATE TABLE article(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(300),
+    content VARCHAR(3000),
+    u_id INT
+);
+
+ALTER TABLE userinfo
+ADD nickname VARCHAR(30) AFTER password;
+
+SHOW TABLES
+
+use bbsdb
+
+SELECT * FROM userinfo WHERE username='范传奇'
 
 
 
