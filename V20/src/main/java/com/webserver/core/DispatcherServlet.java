@@ -40,7 +40,7 @@ public class DispatcherServlet {
         return instance;//只返回一种该对象
     }
 
-    //★该方法用来请求抽象路径和判断文件是否属于该项目下,并作出不同的响应页面
+    //★该方法根据请求路径来判断是否为业务请求,是则反射调用HandlerMapping中的getMethod()传入路径,自动执行对应业务方法,若不是,则响应相应的页面
     public void service(HttpServletRequest request, HttpServletResponse response) {//传入两个实例用来根据不同请求结果来设置响应内容
         //利用getRequestURI()方法获取request中的抽象路径(有参无参不影响该路径)并赋给path(该抽象路径是用户输入包含于请求行中的)
         //例如:请求行内容: GET /regUser?..... HTTP/1.1
