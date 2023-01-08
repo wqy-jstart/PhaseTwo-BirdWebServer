@@ -1,0 +1,47 @@
+## 数据库的基本操作
+# 1.查看数据库
+SHOW DATABASES ;
+# 2.创建数据库
+CREATE DATABASE test;
+# 3.删除数据库
+DROP DATABASE test;
+
+## DDL(数据定义语言)语句
+## 表的基本操作
+# 1.查看表
+SHOW TABLES ;
+# 2.创建表
+CREATE TABLE test(
+    id int auto_increment DEFAULT NULL COMMENT '主键ID',
+    name VARCHAR(50) DEFAULT NULL COMMENT '姓名',
+    age int unsigned DEFAULT NULL COMMENT '年龄',
+    PRIMARY KEY (id)
+) engine InnoDB DEFAULT CHARSET = utf8mb4 COMMENT '测试表';
+# 3.删除表
+DROP TABLE IF EXISTS test;
+# 4.查看表的创建信息
+DESC test;
+# 5.查看表的全部信息
+SHOW CREATE TABLE test;
+# 6.添加表字段
+ALTER TABLE test ADD gender VARCHAR(50) DEFAULT NULL COMMENT '性别' AFTER name;
+# 7.删除表字段
+ALTER TABLE test DROP age;
+# 8.修改表字段
+ALTER TABLE test CHANGE gender gender VARCHAR(25) DEFAULT NULL COMMENT '修改后的性别字段' AFTER name;
+# 9.直接修改表字段
+ALTER TABLE test MODIFY gender VARCHAR(255) DEFAULT NULL COMMENT '直接修改后的性别字段' AFTER name;
+# 10.修改表名
+ALTER TABLE test RENAME test1;
+
+## DML(数据操作语言)语句
+# 插入一条数据
+INSERT INTO test(id, name, age) VALUES (1,'小明',18);
+# 删除一条数据
+DELETE FROM test WHERE name='小明';
+# 修改一条数据
+UPDATE test SET name = '小华' WHERE name = '小明';
+
+## DQL(数据查询语言)语句
+SELECT * FROM test;
+SELECT * FROM test WHERE id = 1;
