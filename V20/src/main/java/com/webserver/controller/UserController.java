@@ -12,15 +12,6 @@ import java.sql.*;
 
 @Controller
 public class UserController {
-    private static File userDir;//用来表示存放所有用户信息的目录
-
-    static {
-        userDir = new File("./users");
-        if (!userDir.exists()) { //判断如果目录不存在
-            userDir.mkdirs();//重新多级创建
-        }
-    }
-
     /**
      * 处理用户注册
      *
